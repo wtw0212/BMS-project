@@ -6,15 +6,15 @@
       <sourceFolder url="file://$MODULE_DIR$/BMS-system/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://F:/Users/wtw0212/Downloads/lab_4/ojdbc8.jar!/" />
+          <root url="jar://$MODULE_DIR$/BMS-system/lib/ojdbc8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

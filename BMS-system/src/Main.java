@@ -1,3 +1,5 @@
+import java.sql.*;
+import oracle.jdbc.driver.*;
 import java.util.Scanner;
 
 public class Main {
@@ -8,7 +10,7 @@ public class Main {
         while (running) {
             System.out.println("----------------------------------------------------------------");
             System.out.println("             Welcome to the Banquet Manage System!");
-            System.out.println("             COMP2411 Database System (2024 Fall)");
+            System.out.println("             COMP2411 Database System (Fall 2024)");
             System.out.println("                       Project Group 43");
             System.out.println();
             System.out.println("- [1] Manager Login");
@@ -19,7 +21,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    managerLogin();
+                    managerLogin(scanner);
                     break;
                 case -1:
                     System.out.println("Exiting the system. Goodbye!");
@@ -33,10 +35,43 @@ public class Main {
         scanner.close();
     }
 
-    private static void managerLogin() {
-        // Placeholder for manager login functionality
-        System.out.println("Manager login functionality is not yet implemented.");
-        // Here you would typically prompt for username and password,
-        // then verify these credentials against your SQL database.
+    private static void managerLogin(Scanner scanner) {
+        // Connect to the database (for project only, and password will be deleted after grading)
+        String dbUsername = "\"23118761d\"";
+        String dbPassword = "btracoql";
+        String url = "jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms";
+
+        // Prompt for username and password
+        System.out.print("Enter username: ");
+        String username = scanner.next();
+        System.out.print("Enter password: ");
+        String password = scanner.next();
+
+        // SQL query to check credentials
+        String query = "SELECT * FROM managers WHERE username = ? AND password = ?";
+
+        try {
+            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+            OracleConnection conn = (OracleConnection)DriverManager.getConnection(url,dbUsername,dbPassword);
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Login successful! Welcome, " + username + "!");
+                // Proceed with manager functionalities
+            } else {
+                System.out.println("Invalid username or password. Please try again.");
+            }
+
+            // Clean up
+            rs.close();
+            pstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while connecting to the database.");
+        }
     }
 }
