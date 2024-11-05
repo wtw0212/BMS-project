@@ -66,20 +66,61 @@ public class DB_query {
         }
     }
 // Method to retrieve banquets
-    public void viewBanquets() {
-        String query = "SELECT * FROM banquets"; // Adjust table name as necessary
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+public void viewBanquets() {
+    String banquetQuery = "SELECT * FROM Banquets"; // Query to get all banquets
+    String mealQuery = "SELECT * FROM Meals WHERE banquet_id = ?"; // Query to get meals for a specific banquet
 
-            while (rs.next()) {
-                // Assuming there are columns like id and name in the banquets table
-                System.out.println("Banquet ID: " + rs.getInt("banquet_id") + ", Name: " + rs.getString("banquet_name"));
+    try (Connection conn = getConnection();
+         Statement banquetStmt = conn.createStatement();
+         ResultSet banquetRs = banquetStmt.executeQuery(banquetQuery)) {
+
+        while (banquetRs.next()) {
+            // Retrieve banquet details
+            int banquetId = banquetRs.getInt("banquet_id");
+            String banquetName = banquetRs.getString("banquet_name");
+            String banquetDate = banquetRs.getString("banquet_date");
+            String address = banquetRs.getString("address");
+            String location = banquetRs.getString("location");
+            String contactFirstName = banquetRs.getString("contact_first_name");
+            String contactLastName = banquetRs.getString("contact_last_name");
+            String available = banquetRs.getString("available");
+            int quota = banquetRs.getInt("quota");
+
+            // Display banquet details
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff | Available | Quota ");
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-2d | %-18s | %-19s | %-22s | %-14s | %-10s | %-2s | %-5d ",
+                    banquetId, banquetName, banquetDate, address, location, contactFirstName + " " + contactLastName, available, quota);
+
+            // Now retrieve and display meals for this banquet
+            try (PreparedStatement mealStmt = conn.prepareStatement(mealQuery)) {
+                mealStmt.setInt(1, banquetId);
+                ResultSet mealRs = mealStmt.executeQuery();
+
+                System.out.println("\n"+"Meals:");
+                System.out.println("------------------------------------------------------------------------------------------------------------");
+                System.out.println("Meal Type | Dish Name | Special Cuisine | Price ");
+                System.out.println("------------------------------------------------------------------------------------------------------------");
+                while (mealRs.next()) {
+                    String mealType = mealRs.getString("meal_type");
+                    String dishName = mealRs.getString("dish_name");
+                    double price = mealRs.getDouble("price");
+                    String specialCuisine = mealRs.getString("special_cuisine");
+
+                    // Display meal details
+                    System.out.printf("%-5s | %-12s | %-6s | %.2f%n",
+                            mealType, dishName, specialCuisine, price);
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            System.out.println("--------------------------------------------------");
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("An error occurred while retrieving banquets.");
     }
+}
 
     // Method to retrieve attendees
     public void viewAttendees() {
