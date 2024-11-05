@@ -131,7 +131,7 @@ public void viewBanquets() {
 
             while (rs.next()) {
                 // Assuming there are columns like id and name in the attendees table
-                System.out.println("Attendee ID: " + rs.getInt("attendee_id") + ", Name: " + rs.getString("first_name")+" "+rs.getString("last_name"));
+                System.out.println("Attendee Email: " + rs.getString("email") + ", Name: " + rs.getString("first_name")+" "+rs.getString("last_name"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

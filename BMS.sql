@@ -2,9 +2,9 @@ create database BMS;
 use BMS;
 
 create table admins(
-username varchar(10),
-password varchar(10));
-insert into admins (username,password) values(123,123);
+adminEmail VARCHAR(255) NOT NULL UNIQUE,
+adminPassword VARCHAR(255) NOT NULL);
+insert into admins (adminEmail,adminPassword) values(123,123);
 
 CREATE TABLE Banquets (
     banquet_id INT AUTO_INCREMENT PRIMARY KEY,  -- Banquet Identification Number (BIN)
@@ -29,17 +29,15 @@ CREATE TABLE Meals (
 );
 
 CREATE TABLE Attendees (
-    attendee_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique identifier for each attendee
     first_name VARCHAR(100) NOT NULL,            -- First name of the attendee
     last_name VARCHAR(100) NOT NULL,             -- Last name of the attendee
     address VARCHAR(255) NOT NULL,                -- Address of the attendee
     attendee_type ENUM('staff', 'student', 'alumni', 'guest') NOT NULL, -- Type of attendee
-    email VARCHAR(255) NOT NULL UNIQUE,          -- Email address of the attendee (account ID)
+    email VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, -- Email address of the attendee (account ID)
     password VARCHAR(255) NOT NULL,               -- Password for account authentication
     mobile_number CHAR(8) NOT NULL,              -- Mobile number (8-digit)
     affiliated_organization VARCHAR(255),         -- Affiliated organization
     registration_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Date of registration
-    UNIQUE (email)                                -- Ensure email is unique
 );
 
 INSERT INTO Banquets (banquet_name, banquet_date, address, location, contact_first_name, contact_last_name, available, quota) VALUES
