@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
+        DB_query dbQuery = new DB_query(); // Create an instance of DB_query
 
         while (running) {
             System.out.println("----------------------------------------------------------------");
@@ -14,14 +15,19 @@ public class Main {
             System.out.println("                       Project Group 43");
             System.out.println();
             System.out.println("- [1] Manager Login");
+            System.out.println("- [2] User Registration");
             System.out.println("- [-1] Exit System");
             System.out.print(">>> Please select the above options x in [x]: ");
 
             int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
-                    managerLogin(scanner);
+                    managerLogin(scanner, dbQuery);
+                    break;
+                case 2:
+                    registerUser(scanner, dbQuery);
                     break;
                 case -1:
                     System.out.println("Exiting the system. Goodbye!");
@@ -34,54 +40,64 @@ public class Main {
 
         scanner.close();
     }
-
-    private static void managerLogin(Scanner scanner) {
-        // Connect to the database
-        String dbUsername = "root";
-        String dbPassword = "1qewasdrt";
-        String url = "jdbc:mysql://127.0.0.1:3306/BMS"; // Update with your database name
-
-        // Prompt for username and password
-        System.out.print("Enter username: ");
-        String username = scanner.next();
+    private static void registerUser(Scanner scanner, DB_query dbQuery) {
+        // Prompt for user details
+        System.out.print("Enter first name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Enter last name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Enter address: ");
+        String address = scanner.nextLine();
+        System.out.print("Enter attendee type (staff, student, alumni, guest): ");
+        String attendeeType = scanner.nextLine();
+        System.out.print("Enter email address: ");
+        String email = scanner.nextLine();
         System.out.print("Enter password: ");
-        String password = scanner.next();
+        String password = scanner.nextLine();
+        System.out.print("Enter mobile number (8 digits): ");
+        String mobileNumber = scanner.nextLine();
+        System.out.print("Enter affiliated organization: ");
+        String affiliatedOrganization = scanner.nextLine();
 
-        // SQL query to check credentials
-        String query = "SELECT * FROM admins WHERE username = ? AND password = ?";
-
-        try {
-            // Load the MySQL JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Establish the connection
-            Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword);
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                System.out.println("Login successful! Welcome, " + username + "!");
-                // Call the method to show options after successful login
-                showManagerOptions(scanner, new DB_query());
-            } else {
-                System.out.println("Invalid username or password. Please try again.");
-            }
-
-            // Clean up
-            rs.close();
-            pstmt.close();
-            conn.close();
-        } catch (ClassNotFoundException e) {
-            System.out.println("MySQL JDBC Driver not found.");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("An error occurred while connecting to the database.");
+        // Validate input
+        if (!email.contains("@")) {
+            System.out.println("Invalid email address. Please include '@'.");
+            return;
+        }
+        if (mobileNumber.length() != 8 || !mobileNumber.matches("\\d{8}")) {
+            System.out.println("Mobile number must be an 8-digit number.");
+            return;
+        }
+        if (!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
+            System.out.println("First name and last name must contain only English characters.");
+            return;
+        }
+        // Call the registerUser method from DB_query
+        boolean success = dbQuery.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
+        if (success) {
+            System.out.println("Registration successful! Welcome, " + firstName + "!");
+        } else {
+            System.out.println("Registration failed. Please try again.");
         }
     }
 
+    private static void managerLogin(Scanner scanner, DB_query dbQuery) {
+        // Prompt for username and password
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        // Call the managerLogin method from DB_query
+        boolean success = dbQuery.managerLogin(username, password);
+        if (success) {
+            System.out.println("Login successful! Welcome, " + username + "!");
+            // Call the method to show options after successful login
+            showManagerOptions(scanner, dbQuery);
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+        }
+    }
     private static void showManagerOptions(Scanner scanner, DB_query dbQuery) {
         boolean loggedIn = true;
 
