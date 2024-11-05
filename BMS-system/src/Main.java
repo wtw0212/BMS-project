@@ -118,14 +118,13 @@ public class Main {
     private static void viewBanquets(Connection conn) {
         // Implement the logic to view banquets
         System.out.println("Viewing banquets...");
-        // Example SQL query to fetch banquets
-        String query = "SELECT * FROM banquets"; // Adjust table name as necessary
+
+        String query = "SELECT * FROM banquets";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                // Assuming there are columns like id and name in the banquets table
-                System.out.println("Banquet ID: " + rs.getInt("id") + ", Name: " + rs.getString("name"));
+                System.out.println("Banquet ID(BIN): " + rs.getInt("id") + ", Name: " + rs.getString("name"));
             }
             rs.close();
             stmt.close();
@@ -136,14 +135,13 @@ public class Main {
     private static void viewAttendees(Connection conn) {
         // Implement the logic to view attendees
         System.out.println("Viewing attendees...");
-        // Example SQL query to fetch attendees
-        String query = "SELECT * FROM attendees"; // Adjust table name as necessary
+        String query = "SELECT * FROM attendees";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 // Assuming there are columns like id and name in the attendees table
-                System.out.println("Attendee ID: " + rs.getInt("id") + ", Name: " + rs.getString("name"));
+                System.out.println("Attendee ID(email): " + rs.getInt("id") + ", Name: " + rs.getString("name"));
             }
             rs.close();
             stmt.close();
