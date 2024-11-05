@@ -64,7 +64,7 @@ public class Main {
             if (rs.next()) {
                 System.out.println("Login successful! Welcome, " + username + "!");
                 // Call the method to show options after successful login
-                showManagerOptions(scanner, conn);
+                showManagerOptions(scanner, new DB_query());
             } else {
                 System.out.println("Invalid username or password. Please try again.");
             }
@@ -81,7 +81,8 @@ public class Main {
             System.out.println("An error occurred while connecting to the database.");
         }
     }
-    private static void showManagerOptions(Scanner scanner, Connection conn) {
+
+    private static void showManagerOptions(Scanner scanner, DB_query dbQuery) {
         boolean loggedIn = true;
 
         while (loggedIn) {
@@ -97,13 +98,13 @@ public class Main {
 
             switch (option) {
                 case 1:
-                    viewBanquets(conn);
+                    dbQuery.viewBanquets();
                     break;
                 case 2:
-                    viewAttendees(conn);
+                    dbQuery.viewAttendees();
                     break;
                 case 3:
-                    generateReport(conn);
+                    dbQuery.generateReport();
                     break;
                 case -1:
                     System.out.println("Exiting the manager options.");
@@ -113,44 +114,5 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
             }
         }
-    }
-
-    private static void viewBanquets(Connection conn) {
-        // Implement the logic to view banquets
-        System.out.println("Viewing banquets...");
-
-        String query = "SELECT * FROM banquets";
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                System.out.println("Banquet ID(BIN): " + rs.getInt("id") + ", Name: " + rs.getString("name"));
-            }
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    private static void viewAttendees(Connection conn) {
-        // Implement the logic to view attendees
-        System.out.println("Viewing attendees...");
-        String query = "SELECT * FROM attendees";
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                System.out.println("Attendee email: " + rs.getInt("email") + ", Name: " + rs.getString("name"));
-            }
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void generateReport(Connection conn) {
-        // Implement the logic to generate a report
-        System.out.println("Generating report...");
     }
 }
