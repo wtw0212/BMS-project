@@ -42,3 +42,37 @@ CREATE TABLE Attendees (
     UNIQUE (email)                                -- Ensure email is unique
 );
 
+INSERT INTO Banquets (banquet_name, banquet_date, address, location, contact_first_name, contact_last_name, available, quota) VALUES
+('Annual Charity Gala', '2024-12-01 18:00:00', '123 Charity St, Cityville', 'Grand Hall', 'John', 'Doe', 'Y', 100),
+('Corporate Retreat', '2024-11-15 09:00:00', '456 Business Rd, Cityville', 'Conference Center', 'Jane', 'Smith', 'Y', 50),
+('Wedding Reception', '2024-10-20 17:00:00', '789 Wedding Ave, Cityville', 'Banquet Hall', 'Emily', 'Johnson', 'Y', 200),
+('Holiday Party', '2024-12-20 19:00:00', '321 Festive Blvd, Cityville', 'Rooftop Lounge', 'Michael', 'Brown', 'Y', 150);
+
+INSERT INTO Meals (banquet_id, meal_type, dish_name, price, special_cuisine) VALUES
+(1, 'Fish', 'Grilled Salmon', 25.00, 'Mediterranean'),
+(1, 'Chicken', 'Herb Roasted Chicken', 20.00, 'Italian'),
+(1, 'Beef', 'Beef Wellington', 30.00, 'British'),
+(1, 'Vegetarian', 'Stuffed Bell Peppers', 18.00, 'Mexican'),
+
+(2, 'Fish', 'Baked Cod', 22.00, 'French'),
+(2, 'Chicken', 'Chicken Alfredo', 19.00, 'Italian'),
+(2, 'Beef', 'Steak Frites', 28.00, 'French'),
+(2, 'Vegetarian', 'Pasta Primavera', 17.00, 'Italian'),
+
+(3, 'Fish', 'Seared Tuna', 27.00, 'Japanese'),
+(3, 'Chicken', 'Chicken Marsala', 21.00, 'Italian'),
+(3, 'Beef', 'Braised Short Ribs', 32.00, 'American'),
+(3, 'Vegetarian', 'Eggplant Parmesan', 16.00, 'Italian'),
+
+(4, 'Fish', 'Fish Tacos', 15.00, 'Mexican'),
+(4, 'Chicken', 'BBQ Chicken Wings', 12.00, 'American'),
+(4, 'Beef', 'Beef Tacos', 15.00, 'Mexican'),
+(4, 'Vegetarian', 'Vegetable Stir Fry', 14.00, 'Asian');
+
+INSERT INTO Attendees (first_name, last_name, address, attendee_type, email, password, mobile_number, affiliated_organization) VALUES
+('Alice', 'Williams', '101 Main St, Cityville', 'student', 'alice.williams@example.com', 'password123', '12345678', 'PolyU'),
+('Bob', 'Smith', '202 Second St, Cityville', 'staff', 'bob.smith@example.com', 'password123', '87654321', 'SPEED'),
+('Charlie', 'Johnson', '303 Third St, Cityville', 'alumni', 'charlie.johnson@example.com', 'password123', '23456789', 'HKCC'),
+('Diana', 'Brown', '404 Fourth St, Cityville', 'guest', 'diana.brown@example.com', 'password123', '34567890', 'Others'),
+('Ethan', 'Davis', '505 Fifth St, Cityville', 'student', 'ethan.davis@example.com', 'password123', '45678901', 'PolyU');
+
