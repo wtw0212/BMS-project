@@ -6,7 +6,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
-        DB_query dbQuery = new DB_query(); // Create an instance of DB_query
 
         while (running) {
             System.out.println("----------------------------------------------------------------");
@@ -14,7 +13,7 @@ public class Main {
             System.out.println("             COMP2411 Database System (Fall 2024)");
             System.out.println("                       Project Group 43");
             System.out.println();
-            System.out.println("- [1] Manager Login");
+            System.out.println("- [1] Login");
             System.out.println("- [2] User Registration");
             System.out.println("- [-1] Exit System");
             System.out.print(">>> Please select the above options x in [x]: ");
@@ -24,10 +23,10 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    managerLogin(scanner, dbQuery);
+                    login(scanner);
                     break;
                 case 2:
-                    registerUser(scanner, dbQuery);
+                    registerUser(scanner);
                     break;
                 case -1:
                     System.out.println("Exiting the system. Goodbye!");
@@ -40,7 +39,91 @@ public class Main {
 
         scanner.close();
     }
-    private static void registerUser(Scanner scanner, DB_query dbQuery) {
+
+    private static void login(Scanner scanner) {
+        // Prompt for username and password
+        System.out.print("Enter email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        if (DB_query.isAdmin(email, password)) {
+            System.out.println("Admin login successful! Welcome, " + email + "!");
+            showAdminOptions(scanner);
+        } else if (DB_query.isAttendee(email, password)) {
+            System.out.println("User login successful! Welcome, " + email + "!");
+            showUserOptions(scanner);
+        } else {
+            System.out.println("Invalid email or password. Please try again.");
+        }
+    }
+
+    private static void showAdminOptions(Scanner scanner) {
+        boolean loggedIn = true;
+
+        while (loggedIn) {
+            System.out.println("----------------------------------------------------------------");
+            System.out.println("Admin Options:");
+            System.out.println("- [1] View Banquets");
+            System.out.println("- [2] View Attendees");
+            System.out.println("- [3] Generate Report");
+            System.out.println("- [-1] Logout");
+            System.out.print(">>> Please select the above options x in [x]: ");
+
+            int option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    new DB_query().viewBanquets();
+                    break;
+                case 2:
+                    new DB_query().viewAttendees();
+                    break;
+                case 3:
+                    new DB_query().generateReport();
+                    break;
+                case -1:
+                    System.out.println("Logging out...");
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void showUserOptions(Scanner scanner) {
+        boolean loggedIn = true;
+
+        while (loggedIn) {
+            System.out.println("----------------------------------------------------------------");
+            System.out.println("User Options:");
+            System.out.println("- [1] View Available Banquets");
+            System.out.println("- [2] Register for a Banquet");
+            System.out.println("- [-1] Logout");
+            System.out.print(">>> Please select the above options x in [x]: ");
+
+            int option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    new DB_query().viewBanquets(); // Assuming this method shows available banquets
+                    break;
+                case 2:
+                    // Implement banquet registration logic here
+                    System.out.println("Registering for a banquet...");
+                    break;
+                case -1:
+                    System.out.println("Logging out...");
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void registerUser(Scanner scanner) {
         // Prompt for user details
         System.out.print("Enter first name: ");
         String firstName = scanner.nextLine();
@@ -72,63 +155,12 @@ public class Main {
             System.out.println("First name and last name must contain only English characters.");
             return;
         }
-        // Call the registerUser method from DB_query
-        boolean success = dbQuery.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
-        if (success) {
+
+        boolean registered = DB_query.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
+        if (registered) {
             System.out.println("Registration successful! Welcome, " + firstName + "!");
         } else {
             System.out.println("Registration failed. Please try again.");
-        }
-    }
-
-    private static void managerLogin(Scanner scanner, DB_query dbQuery) {
-        // Prompt for username and password
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        // Call the managerLogin method from DB_query
-        boolean success = dbQuery.managerLogin(username, password);
-        if (success) {
-            System.out.println("Login successful! Welcome, " + username + "!");
-            // Call the method to show options after successful login
-            showManagerOptions(scanner, dbQuery);
-        } else {
-            System.out.println("Invalid username or password. Please try again.");
-        }
-    }
-    private static void showManagerOptions(Scanner scanner, DB_query dbQuery) {
-        boolean loggedIn = true;
-
-        while (loggedIn) {
-            System.out.println("----------------------------------------------------------------");
-            System.out.println("Please select an option:");
-            System.out.println("- [1] View Banquets");
-            System.out.println("- [2] View Attendees");
-            System.out.println("- [3] Generate Report");
-            System.out.println("- [-1] Exit");
-            System.out.print(">>> Please select the above options x in [x]: ");
-
-            int option = scanner.nextInt();
-
-            switch (option) {
-                case 1:
-                    dbQuery.viewBanquets();
-                    break;
-                case 2:
-                    dbQuery.viewAttendees();
-                    break;
-                case 3:
-                    dbQuery.generateReport();
-                    break;
-                case -1:
-                    System.out.println("Exiting the manager options.");
-                    loggedIn = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
         }
     }
 }
