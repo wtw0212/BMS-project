@@ -19,7 +19,7 @@ public class DB_query {
     }
 
     public static boolean isAdmin(String email, String password) {
-        String adminQuery = "SELECT * FROM admins WHERE username = ? AND password = ?";
+        String adminQuery = "SELECT * FROM admins WHERE adminEmail = ? AND adminPassword = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(adminQuery)) {
             pstmt.setString(1, email);
