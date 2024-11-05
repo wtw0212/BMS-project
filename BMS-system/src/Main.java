@@ -140,8 +140,7 @@ public class Main {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                // Assuming there are columns like id and name in the attendees table
-                System.out.println("Attendee ID(email): " + rs.getInt("id") + ", Name: " + rs.getString("name"));
+                System.out.println("Attendee email: " + rs.getInt("email") + ", Name: " + rs.getString("name"));
             }
             rs.close();
             stmt.close();
@@ -153,7 +152,5 @@ public class Main {
     private static void generateReport(Connection conn) {
         // Implement the logic to generate a report
         System.out.println("Generating report...");
-        // Example logic for generating a report
-        // You can customize this based on your requirements
     }
 }
