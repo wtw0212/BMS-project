@@ -1,5 +1,3 @@
-import java.sql.*;
-import oracle.jdbc.driver.*;
 import java.util.Scanner;
 
 public class Main {
@@ -49,77 +47,12 @@ public class Main {
 
         if (DB_query.isAdmin(email, password)) {
             System.out.println("Admin login successful! Welcome, " + email + "!");
-            showAdminOptions(scanner);
+            new AdminOptions(scanner).showAdminOptions();
         } else if (DB_query.isAttendee(email, password)) {
             System.out.println("User login successful! Welcome, " + email + "!");
-            showUserOptions(scanner);
+            new UserOptions(scanner).showUserOptions();
         } else {
             System.out.println("Invalid email or password. Please try again.");
-        }
-    }
-
-    private static void showAdminOptions(Scanner scanner) {
-        boolean loggedIn = true;
-
-        while (loggedIn) {
-            System.out.println("----------------------------------------------------------------");
-            System.out.println("Admin Options:");
-            System.out.println("- [1] View Banquets");
-            System.out.println("- [2] View Attendees");
-            System.out.println("- [3] Generate Report");
-            System.out.println("- [-1] Logout");
-            System.out.print(">>> Please select the above options x in [x]: ");
-
-            int option = scanner.nextInt();
-
-            switch (option) {
-                case 1:
-                    new DB_query().viewBanquets();
-                    break;
-                case 2:
-                    new DB_query().viewAttendees();
-                    break;
-                case 3:
-                    new DB_query().generateReport();
-                    break;
-                case -1:
-                    System.out.println("Logging out...");
-                    loggedIn = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }
-
-    private static void showUserOptions(Scanner scanner) {
-        boolean loggedIn = true;
-
-        while (loggedIn) {
-            System.out.println("----------------------------------------------------------------");
-            System.out.println("User Options:");
-            System.out.println("- [1] View Available Banquets");
-            System.out.println("- [2] Register for a Banquet");
-            System.out.println("- [-1] Logout");
-            System.out.print(">>> Please select the above options x in [x]: ");
-
-            int option = scanner.nextInt();
-
-            switch (option) {
-                case 1:
-                    new DB_query().viewBanquets(); // Assuming this method shows available banquets
-                    break;
-                case 2:
-                    // Implement banquet registration logic here
-                    System.out.println("Registering for a banquet...");
-                    break;
-                case -1:
-                    System.out.println("Logging out...");
-                    loggedIn = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
         }
     }
 
