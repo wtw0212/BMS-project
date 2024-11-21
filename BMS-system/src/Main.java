@@ -50,7 +50,7 @@ public class Main {
             new AdminOptions(scanner).showAdminOptions();
         } else if (DB_query.isAttendee(email, password)) {
             System.out.println("User login successful! Welcome, " + email + "!");
-            new UserOptions(scanner).showUserOptions();
+            new UserOptions(scanner,email).showUserOptions();
         } else {
             System.out.println("Invalid email or password. Please try again.");
         }
@@ -58,8 +58,10 @@ public class Main {
 
     private static void registerUser(Scanner scanner) {
         // Prompt for user details
-        System.out.print("Enter Name: ");
-        String Name = scanner.nextLine();
+        System.out.print("Enter first name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Enter last name: ");
+        String lastName = scanner.nextLine();
         System.out.print("Enter address: ");
         String address = scanner.nextLine();
         System.out.print("Enter attendee type (staff, student, alumni, guest): ");
@@ -82,14 +84,14 @@ public class Main {
             System.out.println("Mobile number must be an 8-digit number.");
             return;
         }
-        if (!Name.matches("[a-zA-Z ]+")){
+        if (!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
             System.out.println("First name and last name must contain only English characters.");
             return;
         }
 
-        boolean registered = DB_query.registerUser(Name, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
+        boolean registered = DB_query.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
         if (registered) {
-            System.out.println("Registration successful! Welcome, " + Name + "!");
+            System.out.println("Registration successful! Welcome, " + firstName + "!");
         } else {
             System.out.println("Registration failed. Please try again.");
         }

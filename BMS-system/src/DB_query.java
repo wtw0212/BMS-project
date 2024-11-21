@@ -19,7 +19,7 @@ public class DB_query {
     }
 
     public static boolean isAdmin(String email, String password) {
-        String adminQuery = "SELECT * FROM admin WHERE Email = ? AND Password = ?";
+        String adminQuery = "SELECT * FROM Admin WHERE Email = ? AND Password = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(adminQuery)) {
             pstmt.setString(1, email);
@@ -33,7 +33,7 @@ public class DB_query {
     }
 
     public static boolean isAttendee(String email, String password) {
-        String attendeeQuery = "SELECT * FROM Attendee WHERE email = ? AND password = ?";
+        String attendeeQuery = "SELECT * FROM Attendee WHERE Email = ? AND Password = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(attendeeQuery)) {
             pstmt.setString(1, email);
@@ -46,28 +46,36 @@ public class DB_query {
         }
     }
 
-    public static boolean registerUser(String name, String address, String attendeeType, String email, String password, String mobileNumber, String affiliatedOrganization) {
-        String query = "INSERT INTO Attendee (Name, address, AttendeeType, email, password, MobileNumber, AffiliatedOrganization) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static boolean registerUser(String firstName, String lastName, String address, String attendeeType,
+                                       String email, String password, String mobileNumber,
+                                       String affiliatedOrganization) {
+        // Updated SQL query to include first and last name
+        String query = "INSERT INTO Attendee (F_Name, L_Name, Address, AttendeeType, Email, Password, MobileNumber, AffiliatedOrganization) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, address);
-            pstmt.setString(3, attendeeType);
-            pstmt.setString(4, email);
-            pstmt.setString(5, password);
-            pstmt.setString(6, mobileNumber);
-            pstmt.setString(7, affiliatedOrganization);
+
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, address);
+            pstmt.setString(4, attendeeType);
+            pstmt.setString(5, email);
+            pstmt.setString(6, password);
+            pstmt.setString(7, mobileNumber);
+            pstmt.setString(8, affiliatedOrganization);
+
             int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            return rowsAffected > 0; // Return true if registration was successful
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return false; // Return false if there was an error
         }
     }
 
-    // Updated method to retrieve banquets with meals combined
-    public void viewBanquets() {
+    public static void viewBanquets() {
         String banquetQuery = "SELECT b.*, " +
+                "b.F_NameOfTheContactStaff, b.L_NameOfTheContactStaff, " + // Select first and last names
                 "GROUP_CONCAT(CONCAT(m.Type, ': ', m.DishName, ' (', m.SpecialCuisine, ') - $', m.Price) SEPARATOR '; ') AS Meals " +
                 "FROM Banquet b " +
                 "LEFT JOIN Meal m ON b.BIN = m.BIN " +
@@ -78,7 +86,7 @@ public class DB_query {
              ResultSet rs = stmt.executeQuery(banquetQuery)) {
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Contact Staff | Quota | Meals");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Quota | Meals");
             System.out.println("------------------------------------------------------------------------------------------------------------");
 
             while (rs.next()) {
@@ -86,12 +94,17 @@ public class DB_query {
                 String banquetName = rs.getString("BanquetName");
                 String banquetDate = rs.getString("DateTime");
                 String address = rs.getString("Address");
-                String contactStaff = rs.getString("NameOfTheContactStaff");
+                String location = rs.getString("Location"); // Retrieve location
+                String contactFirstName = rs.getString("F_NameOfTheContactStaff"); // Retrieve first name
+                String contactLastName = rs.getString("L_NameOfTheContactStaff");   // Retrieve last name
                 int quota = rs.getInt("Quota");
                 String meals = rs.getString("Meals");
 
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-13s | %-5d | %s%n",
-                        banquetId, banquetName, banquetDate, address, contactStaff, quota, meals);
+                // Combine first and last name for display
+                String contactStaffFullName = contactFirstName + " " + contactLastName;
+
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-5d | %s%n",
+                        banquetId, banquetName, banquetDate, address, location, contactStaffFullName, quota, meals);
             }
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
@@ -101,8 +114,7 @@ public class DB_query {
         }
     }
 
-    // Updated method to retrieve attendees with their registered banquets
-    public void viewAttendees() {
+    public static void viewAttendees() {
         String query = "SELECT a.*, GROUP_CONCAT(b.BanquetName SEPARATOR ', ') AS RegisteredBanquets " +
                 "FROM Attendee a " +
                 "LEFT JOIN Registration r ON a.Email = r.Email " +
@@ -119,14 +131,19 @@ public class DB_query {
 
             while (rs.next()) {
                 String email = rs.getString("Email");
-                String name = rs.getString("Name");
+                String firstName = rs.getString("F_Name"); // Fetch first name
+                String lastName = rs.getString("L_Name");   // Fetch last name
                 String attendeeType = rs.getString("AttendeeType");
                 String mobileNumber = rs.getString("MobileNumber");
                 String affiliatedOrg = rs.getString("AffiliatedOrganization");
                 String registeredBanquets = rs.getString("RegisteredBanquets");
 
+                // Combine first and last name for display
+                String fullName = firstName + " " + lastName;
+
                 System.out.printf("%-25s | %-20s | %-13s | %-13s | %-25s | %s%n",
-                        email, name, attendeeType, mobileNumber, affiliatedOrg,
+                        email, fullName, attendeeType, mobileNumber,
+                        affiliatedOrg,
                         (registeredBanquets != null ? registeredBanquets : "None"));
             }
 
@@ -137,7 +154,7 @@ public class DB_query {
         }
     }
 
-    public void generateReport() {
+    public static void generateReport() {
         System.out.println("Generating report...");
 
         try (Connection conn = getConnection()) {
@@ -204,4 +221,341 @@ public class DB_query {
             e.printStackTrace();
         }
     }
+
+    public static boolean createBanquet(String banquetName, String dateTime, String address, String location, String contactFirstName, String contactLastName, String available, int quota) {
+        String query = "INSERT INTO Banquet (BanquetName, DateTime, Address, Location, F_NameOfTheContactStaff, L_NameOfTheContactStaff, Available, Quota) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, banquetName);
+            pstmt.setString(2, dateTime);
+            pstmt.setString(3, address);
+            pstmt.setString(4, location); // Set location
+            pstmt.setString(5, contactFirstName); // Set first name
+            pstmt.setString(6, contactLastName);  // Set last name
+            pstmt.setString(7, available);
+            pstmt.setInt(8, quota);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateBanquet(int bin, String banquetName, String dateTime, String address, String location,
+                                        String contactFirstName, String contactLastName, String available, int quota) {
+        StringBuilder queryBuilder = new StringBuilder("UPDATE Banquet SET ");
+        boolean needComma = false;
+
+        if (!banquetName.isEmpty()) {
+            queryBuilder.append("BanquetName = ?");
+            needComma = true;
+        }
+
+        if (!dateTime.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("DateTime = ?");
+            needComma = true;
+        }
+
+        if (!address.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Address = ?");
+            needComma = true;
+        }
+
+        if (!location.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Location = ?");
+            needComma = true;
+        }
+
+        if (!contactFirstName.isEmpty() || !contactLastName.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("F_NameOfTheContactStaff = ?, L_NameOfTheContactStaff = ?");
+            needComma = true;
+        }
+
+        if (!available.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Available = ?");
+            needComma = true;
+        }
+
+        if (quota != -1) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Quota = ?");
+        }
+
+        queryBuilder.append(" WHERE BIN = ?");
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
+
+            int parameterIndex = 1;
+
+            // Set parameters for banquet details
+            if (!banquetName.isEmpty()) pstmt.setString(parameterIndex++, banquetName);
+            if (!dateTime.isEmpty()) pstmt.setString(parameterIndex++, dateTime);
+            if (!address.isEmpty()) pstmt.setString(parameterIndex++, address);
+            if (!location.isEmpty()) pstmt.setString(parameterIndex++, location);
+
+            // Set first and last name for contact staff
+            if (!contactFirstName.isEmpty() || !contactLastName.isEmpty()) {
+                pstmt.setString(parameterIndex++, contactFirstName);
+                pstmt.setString(parameterIndex++, contactLastName);
+            }
+
+            if (!available.isEmpty()) pstmt.setString(parameterIndex++, available);
+            if (quota != -1) pstmt.setInt(parameterIndex++, quota);
+
+            // Set the BIN parameter for the WHERE clause
+            pstmt.setInt(parameterIndex, bin);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0; // Return true if update was successful
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an error
+        }
+    }
+
+    public static boolean addMealToBanquet(int bin, String type, String dishName, double price, String specialCuisine) {
+        String query = "INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, bin);
+            pstmt.setString(2, type);
+            pstmt.setString(3, dishName);
+            pstmt.setDouble(4, price);
+            pstmt.setString(5, specialCuisine);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void viewAvailableBanquets() {
+        String query = "SELECT b.*, " +
+                "GROUP_CONCAT(CONCAT(m.Type, ': ', m.DishName, ' (', m.SpecialCuisine, ') - $', m.Price) SEPARATOR '; ') AS Meals " +
+                "FROM Banquet b " +
+                "LEFT JOIN Meal m ON b.BIN = m.BIN " +
+                "WHERE b.Available = 'Y' AND b.Quota > 0 " +
+                "GROUP BY b.BIN";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Contact Staff | Available Seats | Meals");
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+
+            while (rs.next()) {
+                int banquetId = rs.getInt("BIN");
+                String banquetName = rs.getString("BanquetName");
+                String banquetDate = rs.getString("DateTime");
+                String address = rs.getString("Address");
+                String contactStaff = rs.getString("NameOfTheContactStaff");
+                int availableSeats = rs.getInt("Quota");
+                String meals = rs.getString("Meals");
+
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-13s | %-15d | %s%n",
+                        banquetId, banquetName, banquetDate, address, contactStaff, availableSeats, meals);
+            }
+
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while retrieving available banquets.");
+        }
+    }
+
+    public static boolean registerForBanquet(String email, int bin, String drinkChoice, int mealChoice, String remarks) {
+        String checkQuotaQuery = "SELECT Quota FROM Banquet WHERE BIN = ? AND Available = 'Y'";
+        String registerQuery = "INSERT INTO Registration (Email, BIN, DrinkChoice, MealChoice, Remarks, RegistrationTime) VALUES (?, ?, ?, ?, ?, NOW())";
+        String updateQuotaQuery = "UPDATE Banquet SET Quota = Quota - 1 WHERE BIN = ?";
+
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+
+            // Check if there are available seats
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkQuotaQuery)) {
+                checkStmt.setInt(1, bin);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    int availableSeats = rs.getInt("Quota");
+                    if (availableSeats <= 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // Register the attendee
+            try (PreparedStatement registerStmt = conn.prepareStatement(registerQuery)) {
+                registerStmt.setString(1, email);
+                registerStmt.setInt(2, bin);
+                registerStmt.setString(3, drinkChoice);
+                registerStmt.setInt(4, mealChoice);
+                registerStmt.setString(5, remarks);
+                registerStmt.executeUpdate();
+            }
+
+            // Update the quota
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateQuotaQuery)) {
+                updateStmt.setInt(1, bin);
+                updateStmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void searchRegisteredBanquets(String email, String date, String banquetName) {
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT b.BIN, b.BanquetName, b.DateTime, b.Address, b.Location, r.DrinkChoice, m.Type AS MealType, m.DishName " + // Include Location
+                        "FROM Registration r " +
+                        "JOIN Banquet b ON r.BIN = b.BIN " +
+                        "JOIN Meal m ON r.MealChoice = m.MealID " +
+                        "WHERE r.Email = ?");
+
+        if (!date.trim().isEmpty()) { // Use trim to avoid issues with whitespace
+            queryBuilder.append(" AND DATE(b.DateTime) = ?");
+        }
+        if (!banquetName.trim().isEmpty()) { // Use trim to avoid issues with whitespace
+            queryBuilder.append(" AND b.BanquetName LIKE ?");
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
+
+            pstmt.setString(1, email);
+            int paramIndex = 2;
+
+            if (!date.trim().isEmpty()) {
+                pstmt.setString(paramIndex++, date);
+            }
+            if (!banquetName.trim().isEmpty()) {
+                pstmt.setString(paramIndex, "%" + banquetName + "%");
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Drink Choice | Meal Type | Dish Name");
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+
+            boolean hasResults = false; // Flag to check if any results were returned
+            while (rs.next()) {
+                hasResults = true; // Set flag to true if at least one result is found
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-12s | %-9s | %s%n",
+                        rs.getInt("BIN"),
+                        rs.getString("BanquetName"),
+                        rs.getString("DateTime"),
+                        rs.getString("Address"),
+                        rs.getString("Location"), // Display location
+                        rs.getString("DrinkChoice"),
+                        rs.getString("MealType"),
+                        rs.getString("DishName"));
+            }
+
+            if (!hasResults) {
+                System.out.println("No registered banquets found for the given criteria.");
+            }
+
+            System.out.println("------------------------------------------------------------------------------------------------------------");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while searching for registered banquets.");
+        }
+    }
+
+    public static boolean updateAttendeeProfile(String email, String firstName, String lastName,
+                                                String address, String attendeeType,
+                                                String password, String mobileNumber,
+                                                String affiliatedOrganization) {
+
+        StringBuilder queryBuilder = new StringBuilder("UPDATE Attendee SET ");
+        boolean needComma = false;
+
+        // Update first name and last name
+        if (!firstName.isEmpty() || !lastName.isEmpty()) {
+            queryBuilder.append("F_Name = ?, L_Name = ?");
+            needComma = true;
+        }
+
+        // Other fields
+        if (!address.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Address = ?");
+            needComma = true;
+        }
+
+        if (!attendeeType.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("AttendeeType = ?");
+            needComma = true;
+        }
+
+        if (!password.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("Password = ?");
+            needComma = true;
+        }
+
+        if (!mobileNumber.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("MobileNumber = ?");
+            needComma = true;
+        }
+
+        if (!affiliatedOrganization.isEmpty()) {
+            if (needComma) queryBuilder.append(", ");
+            queryBuilder.append("AffiliatedOrganization = ?");
+        }
+
+        // Add WHERE clause
+        queryBuilder.append(" WHERE Email = ?");
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
+
+            int parameterIndex = 1;
+
+            // Set first and last name parameters
+            if (!firstName.isEmpty() || !lastName.isEmpty()) {
+                pstmt.setString(parameterIndex++, firstName);
+                pstmt.setString(parameterIndex++, lastName);
+            }
+
+            // Set other parameters
+            if (!address.isEmpty()) pstmt.setString(parameterIndex++, address);
+            if (!attendeeType.isEmpty()) pstmt.setString(parameterIndex++, attendeeType);
+            if (!password.isEmpty()) pstmt.setString(parameterIndex++, password);
+            if (!mobileNumber.isEmpty()) pstmt.setString(parameterIndex++, mobileNumber);
+            if (!affiliatedOrganization.isEmpty()) pstmt.setString(parameterIndex++, affiliatedOrganization);
+
+            // Set email for WHERE clause
+            pstmt.setString(parameterIndex, email);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0; // Return true if update was successful
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an error
+        }
+    }
 }
+
