@@ -58,10 +58,8 @@ public class Main {
 
     private static void registerUser(Scanner scanner) {
         // Prompt for user details
-        System.out.print("Enter first name: ");
-        String firstName = scanner.nextLine();
-        System.out.print("Enter last name: ");
-        String lastName = scanner.nextLine();
+        System.out.print("Enter Name: ");
+        String Name = scanner.nextLine();
         System.out.print("Enter address: ");
         String address = scanner.nextLine();
         System.out.print("Enter attendee type (staff, student, alumni, guest): ");
@@ -84,14 +82,14 @@ public class Main {
             System.out.println("Mobile number must be an 8-digit number.");
             return;
         }
-        if (!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
+        if (!Name.matches("[a-zA-Z ]+")){
             System.out.println("First name and last name must contain only English characters.");
             return;
         }
 
-        boolean registered = DB_query.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
+        boolean registered = DB_query.registerUser(Name, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
         if (registered) {
-            System.out.println("Registration successful! Welcome, " + firstName + "!");
+            System.out.println("Registration successful! Welcome, " + Name + "!");
         } else {
             System.out.println("Registration failed. Please try again.");
         }
