@@ -397,9 +397,9 @@ public class DB_query {
     }
 
 
-    public static boolean registerForBanquet(String email, int bin, String drinkChoice, int mealChoice, String remarks) {
+    public static boolean registerForBanquet(String email, int bin, int mealChoice, String remarks) {
         String checkQuotaQuery = "SELECT Quota FROM Banquet WHERE BIN = ? AND Available = 'Y'";
-        String registerQuery = "INSERT INTO Registration (Email, BIN, DrinkChoice, MealChoice, Remarks, RegistrationTime) VALUES (?, ?, ?, ?, ?, NOW())";
+        String registerQuery = "INSERT INTO Registration (Email, BIN, MealChoice, Remarks, RegistrationTime) VALUES (?, ?, ?, ?, ?, NOW())";
         String updateQuotaQuery = "UPDATE Banquet SET Quota = Quota - 1 WHERE BIN = ?";
 
         try (Connection conn = getConnection()) {
@@ -425,9 +425,8 @@ public class DB_query {
             try (PreparedStatement registerStmt = conn.prepareStatement(registerQuery)) {
                 registerStmt.setString(1, email);
                 registerStmt.setInt(2, bin);
-                registerStmt.setString(3, drinkChoice);
-                registerStmt.setInt(4, mealChoice);
-                registerStmt.setString(5, remarks);
+                registerStmt.setInt(3, mealChoice);
+                registerStmt.setString(4, remarks);
                 registerStmt.executeUpdate();
             }
 
@@ -447,7 +446,7 @@ public class DB_query {
 
     public static void searchRegisteredBanquets(String email, String date, String banquetName) {
         StringBuilder queryBuilder = new StringBuilder(
-                "SELECT b.BIN, b.BanquetName, b.DateTime, b.Address, b.Location, r.DrinkChoice, m.Type AS MealType, m.DishName " + // Include Location
+                "SELECT b.BIN, b.BanquetName, b.DateTime, b.Address, b.Location, m.Type AS MealType, m.DishName " + // Include Location
                         "FROM Registration r " +
                         "JOIN Banquet b ON r.BIN = b.BIN " +
                         "JOIN Meal m ON r.MealChoice = m.MealID " +
@@ -476,19 +475,18 @@ public class DB_query {
             ResultSet rs = pstmt.executeQuery();
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Drink Choice | Meal Type | Dish Name");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Meal Type | Dish Name");
             System.out.println("------------------------------------------------------------------------------------------------------------");
 
             boolean hasResults = false; // Flag to check if any results were returned
             while (rs.next()) {
                 hasResults = true; // Set flag to true if at least one result is found
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-12s | %-9s | %s%n",
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-12s | %-9s | %s%n",
                         rs.getInt("BIN"),
                         rs.getString("BanquetName"),
                         rs.getString("DateTime"),
                         rs.getString("Address"),
                         rs.getString("Location"), // Display location
-                        rs.getString("DrinkChoice"),
                         rs.getString("MealType"),
                         rs.getString("DishName"));
             }

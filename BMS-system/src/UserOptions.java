@@ -61,7 +61,7 @@ public class UserOptions {
         System.out.print("Enter any remarks (e.g., seating preference): ");
         String remarks = scanner.nextLine();
 
-        boolean registered = DB_query.registerForBanquet(userEmail, bin, drinkChoice, mealChoice, remarks);
+        boolean registered = DB_query.registerForBanquet(userEmail, bin, mealChoice, remarks);
         if (registered) {
             System.out.println("Successfully registered for the banquet!");
         } else {
@@ -103,7 +103,6 @@ public class UserOptions {
         System.out.print("Affiliated Organization: ");
         String affiliatedOrganization = scanner.nextLine();
 
-        // Call the updated method with first and last names
         boolean updated = DB_query.updateAttendeeProfile(userEmail, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
 
         if (updated) {
