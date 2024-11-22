@@ -1,3 +1,5 @@
+package Database;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,28 +27,28 @@ public class DB_query {
         System.out.println("Generating report...");
 
         try (Connection conn = getConnection()) {
-            // 1. Registration Status Report
+            // 1. Registration.Registration Status Report
             String registrationQuery = "SELECT b.BanquetName, COUNT(r.RegistrationID) as TotalRegistrations, b.Quota, " +
                     "(b.Quota - COUNT(r.RegistrationID)) as RemainingSeats " +
-                    "FROM Banquet b LEFT JOIN Registration r ON b.BIN = r.BIN " +
+                    "FROM Banquet.Banquet b LEFT JOIN Registration.Registration r ON b.BIN = r.BIN " +
                     "GROUP BY b.BIN";
 
             // 2. Popular Meals Report
             String popularMealsQuery = "SELECT m.Type, m.DishName, COUNT(r.RegistrationID) as OrderCount " +
-                    "FROM Meal m LEFT JOIN Registration r ON m.MealID = r.MealChoice " +
+                    "FROM Meal m LEFT JOIN Registration.Registration r ON m.MealID = r.MealChoice " +
                     "GROUP BY m.MealID ORDER BY OrderCount DESC LIMIT 5";
 
             // 3. Attendance Behavior Report
             String attendanceBehaviorQuery = "SELECT a.AttendeeType, COUNT(DISTINCT r.Email) as UniqueAttendee, " +
                     "COUNT(r.RegistrationID) as TotalRegistrations " +
-                    "FROM Attendee a LEFT JOIN Registration r ON a.Email = r.Email " +
+                    "FROM Attendee.Attendee a LEFT JOIN Registration.Registration r ON a.Email = r.Email " +
                     "GROUP BY a.AttendeeType";
 
             // Execute queries and print reports
-            System.out.println("\n1. Registration Status Report:");
+            System.out.println("\n1. Registration.Registration Status Report:");
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(registrationQuery)) {
-                System.out.printf("%-30s %-20s %-10s %-15s%n", "Banquet Name", "Total Registrations", "Quota", "Remaining Seats");
+                System.out.printf("%-30s %-20s %-10s %-15s%n", "Banquet.Banquet Name", "Total Registrations", "Quota", "Remaining Seats");
                 System.out.println("-------------------------------------------------------------------------------------");
                 while (rs.next()) {
                     System.out.printf("%-30s %-20d %-10d %-15d%n",
@@ -73,7 +75,7 @@ public class DB_query {
             System.out.println("\n3. Attendance Behavior Report:");
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(attendanceBehaviorQuery)) {
-                System.out.printf("%-20s %-20s %-20s%n", "Attendee Type", "Unique Attendee", "Total Registrations");
+                System.out.printf("%-20s %-20s %-20s%n", "Attendee.Attendee Type", "Unique Attendee.Attendee", "Total Registrations");
                 System.out.println("--------------------------------------------------------------------");
                 while (rs.next()) {
                     System.out.printf("%-20s %-20d %-20d%n",

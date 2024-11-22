@@ -1,3 +1,5 @@
+package Banquet;
+
 public class Banquet {
     private int BIN;
     private String banquetName;
@@ -46,7 +48,7 @@ public class Banquet {
 
     @Override
     public String toString() {
-        return "Banquet{" +
+        return "Banquet.Banquet{" +
                 "BIN=" + BIN +
                 ", banquetName='" + banquetName + '\'' +
                 ", dateTime='" + dateTime + '\'' +

@@ -1,8 +1,11 @@
+package Banquet;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Database.DB_query;
 
 public class BanquetService {
     private static final Logger LOGGER = Logger.getLogger(BanquetService.class.getName());

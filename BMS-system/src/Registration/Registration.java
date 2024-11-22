@@ -1,3 +1,5 @@
+package Registration;
+
 public class Registration {
     private int registrationID;
     private String email;
@@ -39,7 +41,7 @@ public class Registration {
 
     @Override
     public String toString() {
-        return "Registration{" +
+        return "Registration.Registration{" +
                 "registrationID=" + registrationID +
                 ", email='" + email + '\'' +
                 ", BIN=" + BIN +

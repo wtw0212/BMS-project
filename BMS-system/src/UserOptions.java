@@ -4,16 +4,16 @@ import java.util.Scanner;
 public class UserOptions {
     private Scanner scanner;
     private String userEmail;
-    private BanquetService banquetService;
-    private RegistrationService registrationService;
-    private AttendeeService attendeeService;
+    private Banquet.BanquetService banquetService;
+    private Registration.RegistrationService registrationService;
+    private Attendee.AttendeeService attendeeService;
 
     public UserOptions(Scanner scanner, String userEmail) {
         this.scanner = scanner;
         this.userEmail = userEmail;
-        this.banquetService = new BanquetService();
-        this.registrationService = new RegistrationService();
-        this.attendeeService = new AttendeeService();
+        this.banquetService = new Banquet.BanquetService();
+        this.registrationService = new Registration.RegistrationService();
+        this.attendeeService = new Attendee.AttendeeService();
     }
 
     public void showUserOptions() {
@@ -56,7 +56,7 @@ public class UserOptions {
     }
 
     private void viewAvailableBanquets() {
-        BanquetService.viewAvailableBanquets();
+        Banquet.BanquetService.viewAvailableBanquets();
     }
 
     private void registerForBanquet() {
@@ -87,12 +87,12 @@ public class UserOptions {
         System.out.print("Enter part of banquet name or leave blank: ");
         String banquetName = scanner.nextLine();
 
-        List<Registration> registrations = registrationService.searchRegisteredBanquets(userEmail, date, banquetName);
+        List<Registration.Registration> registrations = registrationService.searchRegisteredBanquets(userEmail, date, banquetName);
         if (registrations.isEmpty()) {
             System.out.println("No registered banquets found for the given criteria.");
         } else {
             System.out.println("Registered Banquets:");
-            for (Registration registration : registrations) {
+            for (Registration.Registration registration : registrations) {
                 System.out.println(registration);
             }
         }
@@ -122,7 +122,7 @@ public class UserOptions {
         System.out.print("Affiliated Organization: ");
         String affiliatedOrganization = scanner.nextLine();
 
-        Attendee updatedAttendee = new Attendee(userEmail, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
+        Attendee.Attendee updatedAttendee = new Attendee.Attendee(userEmail, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
         boolean updated = attendeeService.updateAttendeeProfile(updatedAttendee);
 
         if (updated) {

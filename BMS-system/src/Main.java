@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Main {
-    private static final AttendeeService attendeeService = new AttendeeService();
+    private static final Attendee.AttendeeService attendeeService = new Attendee.AttendeeService();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -90,7 +90,7 @@ public class Main {
             return;
         }
 
-        Attendee newAttendee = new Attendee(email, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
+        Attendee.Attendee newAttendee = new Attendee.Attendee(email, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
         boolean registered = attendeeService.registerUser(newAttendee);
         if (registered) {
             System.out.println("Registration successful! Welcome, " + firstName + "!");

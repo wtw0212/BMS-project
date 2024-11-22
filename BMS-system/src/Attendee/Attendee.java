@@ -1,3 +1,5 @@
+package Attendee;
+
 public class Attendee {
     private String email;
     private String firstName;
@@ -42,7 +44,7 @@ public class Attendee {
 
     @Override
     public String toString() {
-        return "Attendee{" +
+        return "Attendee.Attendee{" +
                 "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
