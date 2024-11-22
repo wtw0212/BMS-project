@@ -2,9 +2,13 @@ import java.util.Scanner;
 
 public class AdminOptions {
     private Scanner scanner;
+    private BanquetService banquetService;
+    private AttendeeService attendeeService;
 
     public AdminOptions(Scanner scanner) {
         this.scanner = scanner;
+        this.banquetService = new BanquetService();
+        this.attendeeService = new AttendeeService();
     }
 
     public void showAdminOptions() {
@@ -29,10 +33,10 @@ public class AdminOptions {
 
             switch (option) {
                 case 1:
-                    DB_query.viewBanquets();
+                    banquetService.viewBanquets();
                     break;
                 case 2:
-                    DB_query.viewAttendees();
+                    AttendeeService.viewAttendees();
                     break;
                 case 3:
                     createBanquet();
@@ -82,7 +86,8 @@ public class AdminOptions {
         int quota = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
-        boolean created = DB_query.createBanquet(banquetName, dateTime, address, location, contactFirstName, contactLastName, available, quota);
+        Banquet newBanquet = new Banquet(0, banquetName, dateTime, address, location, contactFirstName, contactLastName, available, quota);
+        boolean created = banquetService.createBanquet(newBanquet);
         if (created) {
             System.out.println("Banquet created successfully!");
         } else {
@@ -114,7 +119,8 @@ public class AdminOptions {
         String quotaStr = scanner.nextLine();
         int quota = quotaStr.isEmpty() ? -1 : Integer.parseInt(quotaStr);
 
-        boolean updated = DB_query.updateBanquet(bin, banquetName, dateTime, address, location, contactFirstName, contactLastName, available, quota);
+        Banquet updatedBanquet = new Banquet(bin, banquetName, dateTime, address, location, contactFirstName, contactLastName, available, quota);
+        boolean updated = banquetService.updateBanquet(updatedBanquet);
         if (updated) {
             System.out.println("Banquet updated successfully!");
         } else {
@@ -138,7 +144,7 @@ public class AdminOptions {
         System.out.print("Special Cuisine: ");
         String specialCuisine = scanner.nextLine();
 
-        boolean added = DB_query.addMealToBanquet(bin, type, dishName, price, specialCuisine);
+        boolean added = BanquetService.addMealToBanquet(bin, type, dishName, price, specialCuisine);
         if (added) {
             System.out.println("Meal added to banquet successfully!");
         } else {
@@ -146,10 +152,22 @@ public class AdminOptions {
         }
     }
 
-    private void getAttendeeByEmail(){
+    private void getAttendeeByEmail() {
         System.out.print("Enter the email of the attendee: ");
         String email = scanner.nextLine();
-        DB_query.getAttendeeByEmail(email);
+        Attendee attendee = attendeeService.getAttendeeByEmail(email);
+        if (attendee != null) {
+            System.out.println("Attendee Details:");
+            System.out.println("Email: " + attendee.getEmail());
+            System.out.println("First Name: " + attendee.getFirstName());
+            System.out.println("Last Name: " + attendee.getLastName());
+            System.out.println("Address: " + attendee.getAddress());
+            System.out.println("Attendee Type: " + attendee.getAttendeeType());
+            System.out.println("Mobile Number: " + attendee.getMobileNumber());
+            System.out.println("Affiliated Organization: " + attendee.getAffiliatedOrganization());
+        } else {
+            System.out.println("No attendee found with the email: " + email);
+        }
     }
 
     private void updateAttendee() {
@@ -170,13 +188,12 @@ public class AdminOptions {
         System.out.print("Affiliated Organization: ");
         String affiliatedOrganization = scanner.nextLine();
 
-        boolean updated = DB_query.updateAttendee(email, firstName, lastName, address, attendeeType, mobileNumber, affiliatedOrganization);
+        Attendee updatedAttendee = new Attendee(email, firstName, lastName, address, attendeeType, null, mobileNumber, affiliatedOrganization);
+        boolean updated = attendeeService.updateAttendeeProfile(updatedAttendee);
         if (updated) {
             System.out.println("Attendee information updated successfully!");
         } else {
             System.out.println("Failed to update attendee information. Please try again.");
         }
     }
-
 }
-

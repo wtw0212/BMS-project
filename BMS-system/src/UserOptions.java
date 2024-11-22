@@ -1,12 +1,19 @@
+import java.util.List;
 import java.util.Scanner;
 
 public class UserOptions {
     private Scanner scanner;
     private String userEmail;
+    private BanquetService banquetService;
+    private RegistrationService registrationService;
+    private AttendeeService attendeeService;
 
     public UserOptions(Scanner scanner, String userEmail) {
         this.scanner = scanner;
         this.userEmail = userEmail;
+        this.banquetService = new BanquetService();
+        this.registrationService = new RegistrationService();
+        this.attendeeService = new AttendeeService();
     }
 
     public void showUserOptions() {
@@ -27,7 +34,7 @@ public class UserOptions {
 
             switch (option) {
                 case 1:
-                    DB_query.viewAvailableBanquets();
+                    viewAvailableBanquets();
                     break;
                 case 2:
                     registerForBanquet();
@@ -48,6 +55,10 @@ public class UserOptions {
         }
     }
 
+    private void viewAvailableBanquets() {
+        BanquetService.viewAvailableBanquets();
+    }
+
     private void registerForBanquet() {
         System.out.print("Enter BIN of the banquet you want to register for: ");
         int bin = scanner.nextInt();
@@ -61,7 +72,7 @@ public class UserOptions {
         System.out.print("Enter any remarks (e.g., seating preference): ");
         String remarks = scanner.nextLine();
 
-        boolean registered = DB_query.registerForBanquet(userEmail, bin, mealChoice, remarks);
+        boolean registered = registrationService.registerForBanquet(userEmail, bin, mealChoice, remarks);
         if (registered) {
             System.out.println("Successfully registered for the banquet!");
         } else {
@@ -76,7 +87,15 @@ public class UserOptions {
         System.out.print("Enter part of banquet name or leave blank: ");
         String banquetName = scanner.nextLine();
 
-        DB_query.searchRegisteredBanquets(userEmail, date, banquetName);
+        List<Registration> registrations = registrationService.searchRegisteredBanquets(userEmail, date, banquetName);
+        if (registrations.isEmpty()) {
+            System.out.println("No registered banquets found for the given criteria.");
+        } else {
+            System.out.println("Registered Banquets:");
+            for (Registration registration : registrations) {
+                System.out.println(registration);
+            }
+        }
     }
 
     private void updateProfile() {
@@ -103,7 +122,8 @@ public class UserOptions {
         System.out.print("Affiliated Organization: ");
         String affiliatedOrganization = scanner.nextLine();
 
-        boolean updated = DB_query.updateAttendeeProfile(userEmail, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
+        Attendee updatedAttendee = new Attendee(userEmail, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
+        boolean updated = attendeeService.updateAttendeeProfile(updatedAttendee);
 
         if (updated) {
             System.out.println("Profile updated successfully!");
@@ -112,4 +132,3 @@ public class UserOptions {
         }
     }
 }
-

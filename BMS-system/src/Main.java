@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class Main {
+    private static final AttendeeService attendeeService = new AttendeeService();
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -40,25 +42,23 @@ public class Main {
     }
 
     private static void login(Scanner scanner) {
-        // Prompt for username and password
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        if (DB_query.isAdmin(email, password)) {
+        if (attendeeService.isAdmin(email, password)) {
             System.out.println("Admin login successful! Welcome, " + email + "!");
             new AdminOptions(scanner).showAdminOptions();
-        } else if (DB_query.isAttendee(email, password)) {
+        } else if (attendeeService.isAttendee(email, password)) {
             System.out.println("User login successful! Welcome, " + email + "!");
-            new UserOptions(scanner,email).showUserOptions();
+            new UserOptions(scanner, email).showUserOptions();
         } else {
             System.out.println("Invalid email or password. Please try again.");
         }
     }
 
     private static void registerUser(Scanner scanner) {
-        // Prompt for user details
         System.out.print("Enter first name: ");
         String firstName = scanner.nextLine();
         System.out.print("Enter last name: ");
@@ -90,7 +90,8 @@ public class Main {
             return;
         }
 
-        boolean registered = DB_query.registerUser(firstName, lastName, address, attendeeType, email, password, mobileNumber, affiliatedOrganization);
+        Attendee newAttendee = new Attendee(email, firstName, lastName, address, attendeeType, password, mobileNumber, affiliatedOrganization);
+        boolean registered = attendeeService.registerUser(newAttendee);
         if (registered) {
             System.out.println("Registration successful! Welcome, " + firstName + "!");
         } else {
