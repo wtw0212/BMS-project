@@ -1,16 +1,19 @@
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DB_query {
     private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/BMS";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "1qewasdrt";
+    private static final Logger LOGGER = Logger.getLogger(DB_query.class.getName());
 
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             System.out.println("MySQL JDBC Driver not found.");
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found.", e);
         }
     }
 
@@ -27,7 +30,7 @@ public class DB_query {
             ResultSet rs = pstmt.executeQuery();
             return rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking Admin credentials", e);
             return false;
         }
     }
@@ -41,7 +44,7 @@ public class DB_query {
             ResultSet rs = pstmt.executeQuery();
             return rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking User credentials", e);
             return false;
         }
     }
@@ -68,7 +71,7 @@ public class DB_query {
             return rowsAffected > 0; // Return true if registration was successful
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error registering user", e);
             return false; // Return false if there was an error
         }
     }
@@ -109,7 +112,7 @@ public class DB_query {
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while retrieving banquets.", e);
             System.out.println("An error occurred while retrieving banquets.");
         }
     }
@@ -149,7 +152,7 @@ public class DB_query {
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while retrieving attendees.", e);
             System.out.println("An error occurred while retrieving attendees.");
         }
     }
@@ -217,8 +220,8 @@ public class DB_query {
             }
 
         } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred while generating the report.", e);
             System.out.println("An error occurred while generating the report.");
-            e.printStackTrace();
         }
     }
 
@@ -238,7 +241,7 @@ public class DB_query {
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while creating banquet.", e);
             return false;
         }
     }
@@ -316,7 +319,7 @@ public class DB_query {
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0; // Return true if update was successful
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while updating banquet.", e);
             return false; // Return false in case of an error
         }
     }
@@ -333,7 +336,7 @@ public class DB_query {
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while adding meal to banquet.", e);
             return false;
         }
     }
@@ -369,7 +372,7 @@ public class DB_query {
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while retrieving available banquets.", e);
             System.out.println("An error occurred while retrieving available banquets.");
         }
     }
@@ -417,7 +420,7 @@ public class DB_query {
             conn.commit();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while registering available banquets.", e);
             return false;
         }
     }
@@ -476,7 +479,7 @@ public class DB_query {
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while searching for registered banquets.", e);
             System.out.println("An error occurred while searching for registered banquets.");
         }
     }
@@ -553,7 +556,7 @@ public class DB_query {
             return rowsAffected > 0; // Return true if update was successful
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "An error occurred while updating profile.", e);
             return false; // Return false in case of an error
         }
     }
