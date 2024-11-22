@@ -91,10 +91,28 @@ public class UserOptions {
         if (registrations.isEmpty()) {
             System.out.println("No registered banquets found for the given criteria.");
         } else {
-            System.out.println("Registered Banquets:");
+            System.out.println("\nRegistered Banquets:");
+            System.out.println("----------------------------------------------------------------");
+            System.out.printf("%-5s | %-30s | %-19s | %-20s | %-15s | %-20s | %-15s%n",
+                    "BIN", "Banquet Name", "Date & Time", "Address", "Location", "Meal", "Registration Time");
+            System.out.println("----------------------------------------------------------------");
             for (Registration.Registration registration : registrations) {
-                System.out.println(registration);
+                String[] details = registration.getRemarks().split(" \\| ");
+                String banquetNameStr = details[0];
+                String dateTime = details[1];
+                String address = details[2];
+                String location = details[3];
+                String meal = details[4];
+                System.out.printf("%-5d | %-30s | %-19s | %-20s | %-15s | %-20s | %-15s%n",
+                        registration.getBIN(),
+                        banquetNameStr,
+                        dateTime,
+                        address,
+                        location,
+                        meal,
+                        registration.getRegistrationTime());
             }
+            System.out.println("----------------------------------------------------------------");
         }
     }
 
