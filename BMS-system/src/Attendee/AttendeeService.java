@@ -35,8 +35,8 @@ public class AttendeeService {
     public static void viewAttendees() {
         String query = "SELECT a.*, GROUP_CONCAT(b.BanquetName SEPARATOR ', ') AS RegisteredBanquets " +
                 "FROM Attendee a " +
-                "LEFT JOIN Registration.Registration r ON a.Email = r.Email " +
-                "LEFT JOIN Banquet.Banquet b ON r.BIN = b.BIN " +
+                "LEFT JOIN Registration r ON a.Email = r.Email " +
+                "LEFT JOIN Banquet b ON r.BIN = b.BIN " +
                 "GROUP BY a.Email";
 
         try (Connection conn = DB_query.getConnection();

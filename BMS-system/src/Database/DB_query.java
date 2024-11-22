@@ -30,18 +30,18 @@ public class DB_query {
             // 1. Registration.Registration Status Report
             String registrationQuery = "SELECT b.BanquetName, COUNT(r.RegistrationID) as TotalRegistrations, b.Quota, " +
                     "(b.Quota - COUNT(r.RegistrationID)) as RemainingSeats " +
-                    "FROM Banquet.Banquet b LEFT JOIN Registration.Registration r ON b.BIN = r.BIN " +
+                    "FROM Banquet b LEFT JOIN Registration r ON b.BIN = r.BIN " +
                     "GROUP BY b.BIN";
 
             // 2. Popular Meals Report
             String popularMealsQuery = "SELECT m.Type, m.DishName, COUNT(r.RegistrationID) as OrderCount " +
-                    "FROM Meal m LEFT JOIN Registration.Registration r ON m.MealID = r.MealChoice " +
+                    "FROM Meal m LEFT JOIN Registration r ON m.MealID = r.MealChoice " +
                     "GROUP BY m.MealID ORDER BY OrderCount DESC LIMIT 5";
 
             // 3. Attendance Behavior Report
             String attendanceBehaviorQuery = "SELECT a.AttendeeType, COUNT(DISTINCT r.Email) as UniqueAttendee, " +
                     "COUNT(r.RegistrationID) as TotalRegistrations " +
-                    "FROM Attendee.Attendee a LEFT JOIN Registration.Registration r ON a.Email = r.Email " +
+                    "FROM Attendee a LEFT JOIN Registration r ON a.Email = r.Email " +
                     "GROUP BY a.AttendeeType";
 
             // Execute queries and print reports
