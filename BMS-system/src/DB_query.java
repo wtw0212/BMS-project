@@ -77,8 +77,8 @@ public class DB_query {
     }
 
     public static void viewBanquets() {
-        String banquetQuery = "SELECT b.*, " +
-                "b.F_NameOfTheContactStaff, b.L_NameOfTheContactStaff, " + // Select first and last names
+        String banquetQuery = "SELECT b.*, b.F_NameOfTheContactStaff, b.L_NameOfTheContactStaff, " +
+                "b.Available, " + // Select availability
                 "GROUP_CONCAT(CONCAT(m.Type, ': ', m.DishName, ' (', m.SpecialCuisine, ') - $', m.Price) SEPARATOR '; ') AS Meals " +
                 "FROM Banquet b " +
                 "LEFT JOIN Meal m ON b.BIN = m.BIN " +
@@ -88,32 +88,38 @@ public class DB_query {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(banquetQuery)) {
 
-            System.out.println("------------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Quota | Meals");
-            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.println("-------------------------------------------------------------------------------------------------------------------");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Available Seats | Availability |");
+            System.out.println("-------------------------------------------------------------------------------------------------------------------");
 
             while (rs.next()) {
                 int banquetId = rs.getInt("BIN");
-                String banquetName = rs.getString("BanquetName");
+                String banquetNameResult = rs.getString("BanquetName");
                 String banquetDate = rs.getString("DateTime");
                 String address = rs.getString("Address");
-                String location = rs.getString("Location"); // Retrieve location
+                String location = rs.getString("Location"); // Retrieve Location
                 String contactFirstName = rs.getString("F_NameOfTheContactStaff"); // Retrieve first name
                 String contactLastName = rs.getString("L_NameOfTheContactStaff");   // Retrieve last name
-                int quota = rs.getInt("Quota");
+                int availableSeats = rs.getInt("Quota");
                 String meals = rs.getString("Meals");
+                String availability = rs.getString("Available"); // Retrieve availability
 
                 // Combine first and last name for display
                 String contactStaffFullName = contactFirstName + " " + contactLastName;
 
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-5d | %s%n",
-                        banquetId, banquetName, banquetDate, address, location, contactStaffFullName, quota, meals);
+                // Print banquet details
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-15d | %-12s%n",
+                        banquetId, banquetNameResult, banquetDate, address, location, contactStaffFullName, availableSeats, availability);
+
+                // Print meals on a new line with proper formatting
+                System.out.println("Meals: " + meals);
+                System.out.println("------"); // Separator for meals
             }
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while retrieving banquets.", e);
-            System.out.println("An error occurred while retrieving banquets.");
+            LOGGER.log(Level.SEVERE, "An error occurred while retrieving available banquets.", e);
+            System.out.println("An error occurred while retrieving available banquets.");
         }
     }
 
@@ -353,22 +359,35 @@ public class DB_query {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
-            System.out.println("------------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Contact Staff | Available Seats | Meals");
-            System.out.println("------------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------");
+            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Available Seats |");
+            System.out.println("------------------------------------------------------------------------------------------------------");
+            System.out.println("Meals|");
+            System.out.println("------");
 
             while (rs.next()) {
                 int banquetId = rs.getInt("BIN");
                 String banquetName = rs.getString("BanquetName");
                 String banquetDate = rs.getString("DateTime");
                 String address = rs.getString("Address");
-                String contactStaff = rs.getString("NameOfTheContactStaff");
+                String location = rs.getString("Location"); // Retrieve Location
+                String contactFirstName = rs.getString("F_NameOfTheContactStaff"); // Retrieve first name
+                String contactLastName = rs.getString("L_NameOfTheContactStaff");   // Retrieve last name
                 int availableSeats = rs.getInt("Quota");
                 String meals = rs.getString("Meals");
 
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-13s | %-15d | %s%n",
-                        banquetId, banquetName, banquetDate, address, contactStaff, availableSeats, meals);
+                // Combine first and last name for display
+                String contactStaffFullName = contactFirstName + " " + contactLastName;
+
+                // Print banquet details
+                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-15d %n",
+                        banquetId, banquetName, banquetDate, address, location, contactStaffFullName, availableSeats);
+
+                // Print meals on a new line with proper formatting
+                System.out.println("Meals: " + meals);
+                System.out.println("------"); // Separator for meals
             }
+
 
             System.out.println("------------------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
@@ -376,6 +395,7 @@ public class DB_query {
             System.out.println("An error occurred while retrieving available banquets.");
         }
     }
+
 
     public static boolean registerForBanquet(String email, int bin, String drinkChoice, int mealChoice, String remarks) {
         String checkQuotaQuery = "SELECT Quota FROM Banquet WHERE BIN = ? AND Available = 'Y'";
