@@ -578,5 +578,54 @@ public class DB_query {
             return false; // Return false in case of an error
         }
     }
+    public static void getAttendeeByEmail(String email) {
+        String query = "SELECT * FROM Attendee WHERE Email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Attendee Details:");
+                System.out.println("Email: " + rs.getString("Email"));
+                System.out.println("First Name: " + rs.getString("F_Name"));
+                System.out.println("Last Name: " + rs.getString("L_Name"));
+                System.out.println("Address: " + rs.getString("Address"));
+                System.out.println("Attendee Type: " + rs.getString("AttendeeType"));
+                System.out.println("Mobile Number: " + rs.getString("MobileNumber"));
+                System.out.println("Affiliated Organization: " + rs.getString("AffiliatedOrganization"));
+            } else {
+                System.out.println("No attendee found with the email: " + email);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred while retrieving attendee information.", e);
+            System.out.println("An error occurred while retrieving attendee information.");
+        }
+    }
+
+    public static boolean updateAttendee(String email, String firstName, String lastName,
+                                         String address, String attendeeType,
+                                         String mobileNumber, String affiliatedOrganization) {
+        String query = "UPDATE Attendee SET F_Name = ?, L_Name = ?, Address = ?, AttendeeType = ?, " +
+                "MobileNumber = ?, AffiliatedOrganization = ? WHERE Email = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, address);
+            pstmt.setString(4, attendeeType);
+            pstmt.setString(5, mobileNumber);
+            pstmt.setString(6, affiliatedOrganization);
+            pstmt.setString(7, email);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred while updating attendee information.", e);
+            return false;
+        }
+    }
+
 }
 

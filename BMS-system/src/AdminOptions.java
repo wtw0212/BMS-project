@@ -19,6 +19,8 @@ public class AdminOptions {
             System.out.println("- [4] Update Banquet");
             System.out.println("- [5] Add Meal to Banquet");
             System.out.println("- [6] Generate Report");
+            System.out.println("- [7] Get Attendee by Email");
+            System.out.println("- [8] Update Attendee");
             System.out.println("- [-1] Logout");
             System.out.print(">>> Please select the above options x in [x]: ");
 
@@ -43,6 +45,12 @@ public class AdminOptions {
                     break;
                 case 6:
                     DB_query.generateReport();
+                    break;
+                case 7:
+                    getAttendeeByEmail();
+                    break;
+                case 8:
+                    updateAttendee();
                     break;
                 case -1:
                     System.out.println("Logging out...");
@@ -137,5 +145,38 @@ public class AdminOptions {
             System.out.println("Failed to add meal to banquet. Please try again.");
         }
     }
+
+    private void getAttendeeByEmail(){
+        System.out.print("Enter the email of the attendee: ");
+        String email = scanner.nextLine();
+        DB_query.getAttendeeByEmail(email);
+    }
+
+    private void updateAttendee() {
+        System.out.print("Enter the email of the attendee to update: ");
+        String email = scanner.nextLine();
+
+        System.out.println("Enter new details (press Enter to skip):");
+        System.out.print("First Name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Last Name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Address: ");
+        String address = scanner.nextLine();
+        System.out.print("Attendee Type: ");
+        String attendeeType = scanner.nextLine();
+        System.out.print("Mobile Number: ");
+        String mobileNumber = scanner.nextLine();
+        System.out.print("Affiliated Organization: ");
+        String affiliatedOrganization = scanner.nextLine();
+
+        boolean updated = DB_query.updateAttendee(email, firstName, lastName, address, attendeeType, mobileNumber, affiliatedOrganization);
+        if (updated) {
+            System.out.println("Attendee information updated successfully!");
+        } else {
+            System.out.println("Failed to update attendee information. Please try again.");
+        }
+    }
+
 }
 

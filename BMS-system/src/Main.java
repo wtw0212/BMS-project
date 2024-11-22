@@ -73,7 +73,7 @@ public class Main {
         String password = scanner.nextLine();
         System.out.print("Enter mobile number (8 digits): ");
         String mobileNumber = scanner.nextLine();
-        System.out.print("Enter affiliated organization: ");
+        System.out.print("Enter affiliated organization (PolyU, SPEED, HKCC, Others): ");
         String affiliatedOrganization = scanner.nextLine();
 
         // Validate input
