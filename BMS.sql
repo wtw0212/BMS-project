@@ -1,3 +1,4 @@
+create database BMS;
 USE BMS;
 
 -- Create Admin table
@@ -43,7 +44,7 @@ CREATE TABLE Attendee (
     AttendeeType ENUM('staff', 'student', 'alumni', 'guest') NOT NULL,
     Password VARCHAR(255) NOT NULL,
     MobileNumber CHAR(8) NOT NULL,
-    AffiliatedOrganization VARCHAR(100) NOT NULL,
+    AffiliatedOrganization ENUM('PolyU', 'SPEED', 'HKCC', 'Others') NOT NULL,
     CHECK (Email LIKE '%@%'),
     CHECK (MobileNumber REGEXP '^[0-9]{8}$')
 );
@@ -100,8 +101,8 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 
 INSERT INTO Attendee (Email, F_Name, L_Name, Address, AttendeeType, Password, MobileNumber, AffiliatedOrganization) VALUES
 ('student1@example.com', 'Emily', 'Davis', '789 Student Rd, Cityville', 'student', 'studentpass123', '12345678', 'PolyU'),
-('guest1@example.com', 'Michael', 'Brown', '321 Guest Blvd, Cityville', 'guest', 'guestpass456', '87654321', ''),
-('staff1@example.com', 'Sarah', 'Wilson', '654 Staff St, Cityville', 'staff', 'staffpass789', '23456789', ''),
+('guest1@example.com', 'Michael', 'Brown', '321 Guest Blvd, Cityville', 'guest', 'guestpass456', '87654321', 'SPEED'),
+('staff1@example.com', 'Sarah', 'Wilson', '654 Staff St, Cityville', 'staff', 'staffpass789', '23456789', 'Others'),
 ('alumni1@example.com', 'David', 'Lee', '159 Alumni Ave, Cityville', 'alumni', 'alumnipass321','34567890','HKCC');
 
 INSERT INTO Registration (Email, BIN, MealChoice, Remarks) VALUES
