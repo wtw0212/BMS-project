@@ -121,7 +121,26 @@ public class AdminOptions {
         String quotaStr = scanner.nextLine();
         int quota = quotaStr.isEmpty() ? -1 : Integer.parseInt(quotaStr);
 
-        Banquet.Banquet updatedBanquet = new Banquet.Banquet(bin, banquetName, dateTime, address, location, contactFirstName, contactLastName, available, quota);
+        // Fetch the existing banquet data
+        Banquet.Banquet existingBanquet = banquetService.getBanquetByBIN(bin);
+        if (existingBanquet == null) {
+            System.out.println("Banquet not found. Please try again.");
+            return;
+        }
+
+        // Update only the fields that have been changed
+        Banquet.Banquet updatedBanquet = new Banquet.Banquet(
+                bin,
+                banquetName.isEmpty() ? existingBanquet.getBanquetName() : banquetName,
+                dateTime.isEmpty() ? existingBanquet.getDateTime() : dateTime,
+                address.isEmpty() ? existingBanquet.getAddress() : address,
+                location.isEmpty() ? existingBanquet.getLocation() : location,
+                contactFirstName.isEmpty() ? existingBanquet.getContactFirstName() : contactFirstName,
+                contactLastName.isEmpty() ? existingBanquet.getContactLastName() : contactLastName,
+                available.isEmpty() ? existingBanquet.getAvailable() : available,
+                quota == -1 ? existingBanquet.getQuota() : quota
+        );
+
         boolean updated = banquetService.updateBanquet(updatedBanquet);
         if (updated) {
             System.out.println("Banquet updated successfully!");
@@ -130,7 +149,9 @@ public class AdminOptions {
         }
     }
 
-    private void addMealToBanquet() {
+
+
+        private void addMealToBanquet() {
         System.out.print("Enter BIN of the banquet to add a meal: ");
         int bin = scanner.nextInt();
         scanner.nextLine(); // Consume newline

@@ -63,9 +63,6 @@ public class UserOptions {
         System.out.print("Enter BIN of the banquet you want to register for: ");
         int bin = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-
-        System.out.print("Enter your drink choice (tea, coffee, lemon tea): ");
-        String drinkChoice = scanner.nextLine();
         System.out.print("Enter your meal choice (MealID): ");
         int mealChoice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
@@ -91,7 +88,7 @@ public class UserOptions {
         if (registrations.isEmpty()) {
             System.out.println("No registered banquets found for the given criteria.");
         } else {
-            System.out.println("\nRegistered Banquets:");
+            System.out.println("\nYou Have Registered Banquets:");
             System.out.println("----------------------------------------------------------------");
             System.out.printf("%-5s | %-30s | %-19s | %-20s | %-15s | %-20s | %-15s%n",
                     "BIN", "Banquet Name", "Date & Time", "Address", "Location", "Meal", "Registration Time");

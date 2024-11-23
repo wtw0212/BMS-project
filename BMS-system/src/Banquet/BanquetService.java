@@ -32,57 +32,25 @@ public class BanquetService {
     }
 
     public boolean updateBanquet(Banquet banquet) {
-        StringBuilder queryBuilder = new StringBuilder("UPDATE Banquet SET ");
-        List<Object> parameters = new ArrayList<>();
-
-        if (banquet.getBanquetName() != null) {
-            queryBuilder.append("BanquetName = ?, ");
-            parameters.add(banquet.getBanquetName());
-        }
-        if (banquet.getDateTime() != null) {
-            queryBuilder.append("DateTime = ?, ");
-            parameters.add(banquet.getDateTime());
-        }
-        if (banquet.getAddress() != null) {
-            queryBuilder.append("Address = ?, ");
-            parameters.add(banquet.getAddress());
-        }
-        if (banquet.getLocation() != null) {
-            queryBuilder.append("Location = ?, ");
-            parameters.add(banquet.getLocation());
-        }
-        if (banquet.getContactFirstName() != null) {
-            queryBuilder.append("F_NameOfTheContactStaff = ?, ");
-            parameters.add(banquet.getContactFirstName());
-        }
-        if (banquet.getContactLastName() != null) {
-            queryBuilder.append("L_NameOfTheContactStaff = ?, ");
-            parameters.add(banquet.getContactLastName());
-        }
-        if (banquet.getAvailable() != null) {
-            queryBuilder.append("Available = ?, ");
-            parameters.add(banquet.getAvailable());
-        }
-        if (banquet.getQuota() > 0) {
-            queryBuilder.append("Quota = ?, ");
-            parameters.add(banquet.getQuota());
-        }
-
-        queryBuilder.setLength(queryBuilder.length() - 2);  // Remove last comma and space
-        queryBuilder.append(" WHERE BIN = ?");
-        parameters.add(banquet.getBIN());
+        String query = "UPDATE Banquet SET BanquetName = ?, DateTime = ?, Address = ?, Location = ?, F_NameOfTheContactStaff = ?, L_NameOfTheContactStaff = ?, Available = ?, Quota = ? WHERE BIN = ?";
 
         try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            for (int i = 0; i < parameters.size(); i++) {
-                pstmt.setObject(i + 1, parameters.get(i));
-            }
+            pstmt.setString(1, banquet.getBanquetName());
+            pstmt.setString(2, banquet.getDateTime());
+            pstmt.setString(3, banquet.getAddress());
+            pstmt.setString(4, banquet.getLocation());
+            pstmt.setString(5, banquet.getContactFirstName());
+            pstmt.setString(6, banquet.getContactLastName());
+            pstmt.setString(7, banquet.getAvailable());
+            pstmt.setInt(8, banquet.getQuota());
+            pstmt.setInt(9, banquet.getBIN());
 
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while updating banquet.", e);
+            LOGGER.log(Level.SEVERE, "Error updating banquet", e);
             return false;
         }
     }
@@ -195,5 +163,35 @@ public class BanquetService {
             LOGGER.log(Level.SEVERE, "An error occurred while retrieving available banquets.", e);
             System.out.println("An error occurred while retrieving available banquets.");
         }
+    }
+
+    public Banquet getBanquetByBIN(int bin) {
+        String query = "SELECT * FROM Banquet WHERE BIN = ?";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, bin);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Banquet(
+                            rs.getInt("BIN"),
+                            rs.getString("BanquetName"),
+                            rs.getString("DateTime"),
+                            rs.getString("Address"),
+                            rs.getString("Location"),
+                            rs.getString("F_NameOfTheContactStaff"),
+                            rs.getString("L_NameOfTheContactStaff"),
+                            rs.getString("Available"),
+                            rs.getInt("Quota")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching banquet by BIN", e);
+        }
+
+        return null;
     }
 }
