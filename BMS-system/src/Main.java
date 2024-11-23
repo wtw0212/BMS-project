@@ -20,7 +20,7 @@ public class Main {
             System.out.print(">>> Please select the above options x in [x]: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
@@ -76,7 +76,7 @@ public class Main {
         System.out.print("Enter affiliated organization (PolyU, SPEED, HKCC, Others): ");
         String affiliatedOrganization = scanner.nextLine();
 
-
+        // Validate input
         if (!email.contains("@")) {
             System.out.println("Invalid email address. Please include '@'.");
             return;
