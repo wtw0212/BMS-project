@@ -202,4 +202,39 @@ public class AttendeeService {
             return false;
         }
     }
+
+    public boolean addAdminAccount(String email, String password, String name) {
+        String query = "INSERT INTO Admin (Email, Password, Name) VALUES (?, ?, ?)";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+            pstmt.setString(3, name);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error adding admin account", e);
+            return false;
+        }
+    }
+
+    public boolean deleteAdminAccount(String email) {
+        String query = "DELETE FROM Admin WHERE Email = ?";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, email);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error deleting admin account", e);
+            return false;
+        }
+    }
+
 }

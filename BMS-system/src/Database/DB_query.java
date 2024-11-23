@@ -45,10 +45,10 @@ public class DB_query {
                     "GROUP BY a.AttendeeType";
 
             // Execute queries and print reports
-            System.out.println("\n1. Registration.Registration Status Report:");
+            System.out.println("\n1. Registration Status Report:");
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(registrationQuery)) {
-                System.out.printf("%-30s %-20s %-10s %-15s%n", "Banquet.Banquet Name", "Total Registrations", "Quota", "Remaining Seats");
+                System.out.printf("%-30s %-20s %-10s %-15s%n", "anquet Name", "Total Registrations", "Quota", "Remaining Seats");
                 System.out.println("-------------------------------------------------------------------------------------");
                 while (rs.next()) {
                     System.out.printf("%-30s %-20d %-10d %-15d%n",
@@ -75,7 +75,7 @@ public class DB_query {
             System.out.println("\n3. Attendance Behavior Report:");
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(attendanceBehaviorQuery)) {
-                System.out.printf("%-20s %-20s %-20s%n", "Attendee.Attendee Type", "Unique Attendee.Attendee", "Total Registrations");
+                System.out.printf("%-20s %-20s %-20s%n", "Attendee Type", "Unique Attendee", "Total Registrations");
                 System.out.println("--------------------------------------------------------------------");
                 while (rs.next()) {
                     System.out.printf("%-20s %-20d %-20d%n",

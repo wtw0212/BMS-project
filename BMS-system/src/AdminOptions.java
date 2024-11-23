@@ -27,6 +27,7 @@ public class AdminOptions {
             System.out.println("- [6] Generate Report");
             System.out.println("- [7] Get Attendee by Email");
             System.out.println("- [8] Update Attendee");
+            System.out.println("- [9] Manage Admin Accounts");
             System.out.println("- [-1] Logout");
             System.out.print(">>> Please select the above options x in [x]: ");
 
@@ -57,6 +58,9 @@ public class AdminOptions {
                     break;
                 case 8:
                     updateAttendee();
+                    break;
+                case 9:
+                    manageAdminAccounts();
                     break;
                 case -1:
                     System.out.println("Logging out...");
@@ -219,4 +223,55 @@ public class AdminOptions {
             System.out.println("Failed to update attendee information. Please try again.");
         }
     }
+
+    private void manageAdminAccounts() {
+        System.out.println("Admin Account Management");
+        System.out.println("1. Add Admin Account");
+        System.out.println("2. Delete Admin Account");
+        System.out.print("Enter your choice (1 or 2): ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        switch (choice) {
+            case 1:
+                addAdminAccount();
+                break;
+            case 2:
+                deleteAdminAccount();
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to main menu.");
+        }
+    }
+
+    private void addAdminAccount() {
+        System.out.println("Adding a new Admin Account");
+        System.out.print("Enter admin email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter admin password: ");
+        String password = scanner.nextLine();
+        System.out.print("Enter admin name: ");
+        String name = scanner.nextLine();
+
+        boolean added = attendeeService.addAdminAccount(email, password, name);
+        if (added) {
+            System.out.println("Admin account added successfully.");
+        } else {
+            System.out.println("Failed to add admin account. The email might already be in use.");
+        }
+    }
+
+    private void deleteAdminAccount() {
+        System.out.println("Deleting an Admin Account");
+        System.out.print("Enter admin email to delete: ");
+        String email = scanner.nextLine();
+
+        boolean deleted = attendeeService.deleteAdminAccount(email);
+        if (deleted) {
+            System.out.println("Admin account deleted successfully.");
+        } else {
+            System.out.println("Failed to delete admin account. The email might not exist or you cannot delete your own account.");
+        }
+    }
+
 }
