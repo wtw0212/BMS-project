@@ -1,38 +1,125 @@
 package Banquet;
 
+import Database.DB_query;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Database.DB_query;
 
 public class BanquetService {
     private static final Logger LOGGER = Logger.getLogger(BanquetService.class.getName());
 
+    public static List<Banquet> viewBanquets() {
+        List<Banquet> banquets = new ArrayList<>();
+        String query = "SELECT * FROM Banquet";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Banquet banquet = new Banquet(
+                        rs.getInt("BIN"),
+                        rs.getString("BanquetName"),
+                        rs.getString("DateTime"),
+                        rs.getString("Address"),
+                        rs.getString("Location"),
+                        rs.getString("ContactFirstName"),
+                        rs.getString("ContactLastName"),
+                        rs.getString("Available"),
+                        rs.getInt("Quota")
+                );
+                banquets.add(banquet);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error viewing banquets", e);
+        }
+
+        return banquets;
+    }
+
+    public static List<Banquet> viewAvailableBanquets() {
+        List<Banquet> availableBanquets = new ArrayList<>();
+        String query = "SELECT * FROM Banquet WHERE Available = 'Y'";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Banquet banquet = new Banquet(
+                        rs.getInt("BIN"),
+                        rs.getString("BanquetName"),
+                        rs.getString("DateTime"),
+                        rs.getString("Address"),
+                        rs.getString("Location"),
+                        rs.getString("ContactFirstName"),
+                        rs.getString("ContactLastName"),
+                        rs.getString("Available"),
+                        rs.getInt("Quota")
+                );
+                availableBanquets.add(banquet);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error viewing available banquets", e);
+        }
+
+        return availableBanquets;
+    }
+
     public boolean createBanquet(Banquet banquet) {
         String query = "INSERT INTO Banquet (BanquetName, DateTime, Address, Location, F_NameOfTheContactStaff, L_NameOfTheContactStaff, Available, Quota) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, banquet.getBanquetName());
-            pstmt.setString(2, banquet.getDateTime());
-            pstmt.setString(3, banquet.getAddress());
-            pstmt.setString(4, banquet.getLocation());
-            pstmt.setString(5, banquet.getContactFirstName());
-            pstmt.setString(6, banquet.getContactLastName());
-            pstmt.setString(7, banquet.getAvailable());
-            pstmt.setInt(8, banquet.getQuota());
+        try (Connection conn = DB_query.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setString(1, banquet.getBanquetName());
+                pstmt.setString(2, banquet.getDateTime());
+                pstmt.setString(3, banquet.getAddress());
+                pstmt.setString(4, banquet.getLocation());
+                pstmt.setString(5, banquet.getContactFirstName());
+                pstmt.setString(6, banquet.getContactLastName());
+                pstmt.setString(7, banquet.getAvailable());
+                pstmt.setInt(8, banquet.getQuota());
 
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+                int affectedRows = pstmt.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating banquet failed, no rows affected.");
+                }
+
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int banquetId = generatedKeys.getInt(1);
+                        createSeatsForBanquet(conn, banquetId, banquet.getQuota());
+                    } else {
+                        throw new SQLException("Creating banquet failed, no ID obtained.");
+                    }
+                }
+            }
+            conn.commit();
+            return true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while creating banquet.", e);
             return false;
         }
     }
 
+    private void createSeatsForBanquet(Connection conn, int banquetId, int quota) throws SQLException {
+        String query = "INSERT INTO SeatReservation (BIN, SeatNumber) VALUES (?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            for (int i = 1; i <= quota; i++) {
+                pstmt.setInt(1, banquetId);
+                pstmt.setString(2, String.format("S%03d", i));
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        }
+    }
+
     public boolean updateBanquet(Banquet banquet) {
-        String query = "UPDATE Banquet SET BanquetName = ?, DateTime = ?, Address = ?, Location = ?, F_NameOfTheContactStaff = ?, L_NameOfTheContactStaff = ?, Available = ?, Quota = ? WHERE BIN = ?";
+        String query = "UPDATE Banquet SET BanquetName = ?, DateTime = ?, Address = ?, Location = ?, ContactFirstName = ?, ContactLastName = ?, Available = ?, Quota = ? WHERE BIN = ?";
 
         try (Connection conn = DB_query.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -57,111 +144,21 @@ public class BanquetService {
 
     public static boolean addMealToBanquet(int bin, String type, String dishName, double price, String specialCuisine) {
         String query = "INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES (?, ?, ?, ?, ?)";
+
         try (Connection conn = DB_query.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setInt(1, bin);
             pstmt.setString(2, type);
             pstmt.setString(3, dishName);
             pstmt.setDouble(4, price);
             pstmt.setString(5, specialCuisine);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while adding meal to banquet.", e);
+            LOGGER.log(Level.SEVERE, "Error adding meal to banquet", e);
             return false;
-        }
-    }
-
-    public static void viewAvailableBanquets() {
-        String query = "SELECT b.*, " +
-                "GROUP_CONCAT(CONCAT(m.Type, ': ', m.DishName, ' (', m.SpecialCuisine, ') - $', m.Price) SEPARATOR '; ') AS Meals " +
-                "FROM Banquet b " +
-                "LEFT JOIN Meal m ON b.BIN = m.BIN " +
-                "WHERE b.Available = 'Y' AND b.Quota > 0 " +
-                "GROUP BY b.BIN";
-
-        try (Connection conn = DB_query.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            System.out.println("------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Available Seats |");
-            System.out.println("------------------------------------------------------------------------------------------------------");
-            System.out.println("Meals|");
-            System.out.println("------");
-
-            while (rs.next()) {
-                int banquetId = rs.getInt("BIN");
-                String banquetName = rs.getString("BanquetName");
-                String banquetDate = rs.getString("DateTime");
-                String address = rs.getString("Address");
-                String location = rs.getString("Location"); // Retrieve Location
-                String contactFirstName = rs.getString("F_NameOfTheContactStaff"); // Retrieve first name
-                String contactLastName = rs.getString("L_NameOfTheContactStaff");   // Retrieve last name
-                int availableSeats = rs.getInt("Quota");
-                String meals = rs.getString("Meals");
-
-                // Combine first and last name for display
-                String contactStaffFullName = contactFirstName + " " + contactLastName;
-
-                // Print banquet details
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-15d %n",
-                        banquetId, banquetName, banquetDate, address, location, contactStaffFullName, availableSeats);
-
-                // Print meals on a new line with proper formatting
-                System.out.println("Meals: " + meals);
-                System.out.println("------"); // Separator for meals
-            }
-
-
-            System.out.println("------------------------------------------------------------------------------------------------------------");
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while retrieving available banquets.", e);
-            System.out.println("An error occurred while retrieving available banquets.");
-        }
-    }
-
-    public void viewBanquets() {
-        String banquetQuery = "SELECT b.*, b.F_NameOfTheContactStaff, b.L_NameOfTheContactStaff, " +
-                "b.Available, " +
-                "GROUP_CONCAT(CONCAT(m.Type, ': ', m.DishName, ' (', m.SpecialCuisine, ') - $', m.Price) SEPARATOR '; ') AS Meals " +
-                "FROM Banquet b " +
-                "LEFT JOIN Meal m ON b.BIN = m.BIN " +
-                "GROUP BY b.BIN";
-
-        try (Connection conn = DB_query.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(banquetQuery)) {
-
-            System.out.println("-------------------------------------------------------------------------------------------------------------------");
-            System.out.println("Banquet ID | Banquet Name | Date & Time | Address | Location | Contact Staff       | Available Seats | Availability |");
-            System.out.println("-------------------------------------------------------------------------------------------------------------------");
-
-            while (rs.next()) {
-                int banquetId = rs.getInt("BIN");
-                String banquetNameResult = rs.getString("BanquetName");
-                String banquetDate = rs.getString("DateTime");
-                String address = rs.getString("Address");
-                String location = rs.getString("Location");
-                String contactFirstName = rs.getString("F_NameOfTheContactStaff");
-                String contactLastName = rs.getString("L_NameOfTheContactStaff");
-                int availableSeats = rs.getInt("Quota");
-                String meals = rs.getString("Meals");
-                String availability = rs.getString("Available");
-
-                String contactStaffFullName = contactFirstName + " " + contactLastName;
-
-                System.out.printf("%-10d | %-12s | %-19s | %-22s | %-10s | %-20s | %-15d | %-12s%n",
-                        banquetId, banquetNameResult, banquetDate, address, location, contactStaffFullName, availableSeats, availability);
-
-                System.out.println("Meals: " + meals);
-                System.out.println("------");
-            }
-
-            System.out.println("------------------------------------------------------------------------------------------------------------");
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while retrieving available banquets.", e);
-            System.out.println("An error occurred while retrieving available banquets.");
         }
     }
 
@@ -181,8 +178,8 @@ public class BanquetService {
                             rs.getString("DateTime"),
                             rs.getString("Address"),
                             rs.getString("Location"),
-                            rs.getString("F_NameOfTheContactStaff"),
-                            rs.getString("L_NameOfTheContactStaff"),
+                            rs.getString("ContactFirstName"),
+                            rs.getString("ContactLastName"),
                             rs.getString("Available"),
                             rs.getInt("Quota")
                     );
@@ -195,3 +192,4 @@ public class BanquetService {
         return null;
     }
 }
+

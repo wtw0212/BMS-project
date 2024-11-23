@@ -1,9 +1,10 @@
 package Attendee;
 
+import Database.DB_query;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Database.DB_query;
 
 public class AttendeeService {
     private static final Logger LOGGER = Logger.getLogger(AttendeeService.class.getName());
@@ -56,7 +57,6 @@ public class AttendeeService {
                 String affiliatedOrg = rs.getString("AffiliatedOrganization");
                 String registeredBanquets = rs.getString("RegisteredBanquets");
 
-                // Combine first and last name for display
                 String fullName = firstName + " " + lastName;
 
                 System.out.printf("%-25s | %-20s | %-13s | %-13s | %-25s | %s%n",
