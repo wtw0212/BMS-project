@@ -5,9 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DB_query {
-    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/BMS";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "1qewasdrt";
+    private static final String DB_URL = "jdbc:mysql://sql12.freemysqlhosting.net:3306/sql12746990";
+    private static final String DB_USERNAME = "sql12746990";
+    private static final String DB_PASSWORD = "2sC3mUmzAn";
     private static final Logger LOGGER = Logger.getLogger(DB_query.class.getName());
 
     static {

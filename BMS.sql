@@ -64,12 +64,13 @@ CREATE TABLE Registration (
 
 -- Create SeatReservation table
 CREATE TABLE SeatReservation (
-    ReservationID INT PRIMARY KEY AUTO_INCREMENT,
-    Email VARCHAR(100),
+    SeatReservationID INT PRIMARY KEY AUTO_INCREMENT,
     BIN INT,
     SeatNumber VARCHAR(10) NOT NULL,
+    Email VARCHAR(255),
+    FOREIGN KEY (BIN) REFERENCES Banquet(BIN),
     FOREIGN KEY (Email) REFERENCES Attendee(Email),
-    FOREIGN KEY (BIN) REFERENCES Banquet(BIN)
+    UNIQUE (BIN, SeatNumber)
 );
 
 -- Add indexes for performance optimization
@@ -120,3 +121,16 @@ INSERT INTO SeatReservation (Email, BIN, SeatNumber) VALUES
 
 INSERT INTO Admin (Name, Email, Password) VALUES
 (123,123,123);
+
+-- Commented operations for easy testing and debugging:
+  --SET FOREIGN_KEY_CHECKS = 0;
+  -- Drop all tables
+  --DROP TABLE IF EXISTS SeatReservation;
+  --DROP TABLE IF EXISTS Registration;
+  --DROP TABLE IF EXISTS Meal;
+  --DROP TABLE IF EXISTS Banquet;
+  --DROP TABLE IF EXISTS Admin;
+  --DROP TABLE IF EXISTS Attendee;
+  -- Re-enable foreign key checks
+  --SET FOREIGN_KEY_CHECKS = 1;
+
