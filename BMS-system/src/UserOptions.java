@@ -25,8 +25,9 @@ public class UserOptions {
             System.out.println("- [1] View Available Banquets");
             System.out.println("- [2] Register for a Banquet");
             System.out.println("- [3] Search Registered Banquets");
-            System.out.println("- [4] Update Profile");
-            System.out.println("- [5] Reserve a Seat");
+            System.out.println("- [4] View Profile");
+            System.out.println("- [5] Update Profile");
+            System.out.println("- [6] Reserve a Seat");
             System.out.println("- [-1] Logout");
             System.out.print(">>> Please select the above options x in [x]: ");
 
@@ -44,9 +45,12 @@ public class UserOptions {
                     searchRegisteredBanquets();
                     break;
                 case 4:
-                    updateProfile();
+                    viewProfile();
                     break;
                 case 5:
+                    updateProfile();
+                    break;
+                case 6:
                     reserveSeat();
                     break;
                 case -1:
@@ -143,6 +147,23 @@ public class UserOptions {
                         registration.getSeatNumber() != null ? registration.getSeatNumber() : "Not reserved");
             }
             System.out.println("----------------------------------------------------------------");
+        }
+    }
+
+    private void viewProfile() {
+        Attendee.Attendee profile = attendeeService.getAttendeeByEmail(userEmail);
+        if (profile != null) {
+            System.out.println("Your Profile:");
+            System.out.println("Email: " + profile.getEmail());
+            System.out.println("First Name: " + profile.getFirstName());
+            System.out.println("Last Name: " + profile.getLastName());
+            System.out.println("Address: " + profile.getAddress());
+            System.out.println("Attendee Type: " + profile.getAttendeeType());
+            System.out.println("Attendee Type: " + profile.getPassword());
+            System.out.println("Mobile Number: " + profile.getMobileNumber());
+            System.out.println("Affiliated Organization: " + profile.getAffiliatedOrganization());
+        } else {
+            System.out.println("Unable to retrieve your profile. Please try again later.");
         }
     }
 
