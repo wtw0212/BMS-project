@@ -7,244 +7,164 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RegistrationService {
     private static final Logger LOGGER = Logger.getLogger(RegistrationService.class.getName());
 
-    public boolean registerForBanquet(String email, int bin, int mealChoice, String remarks, String seatNumber) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        public boolean registerForBanquet(String email, int bin, int mainCourseChoice, int appetizerChoice, int dessertChoice, String remarks) {
+            String query = "INSERT INTO Registration (Email, BIN, MainCourseChoice, AppetizerChoice, DessertChoice, Remarks) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try {
-            conn = DB_query.getConnection();
-            conn.setAutoCommit(false);
+            try (Connection conn = DB_query.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            // Check if the user is already registered for this banquet
-            String checkQuery = "SELECT COUNT(*) FROM Registration WHERE Email = ? AND BIN = ?";
-            pstmt = conn.prepareStatement(checkQuery);
-            pstmt.setString(1, email);
-            pstmt.setInt(2, bin);
-            rs = pstmt.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                System.out.println("You are already registered for this banquet.");
-                return false;
-            }
-
-            // Register for the banquet
-            String registerQuery = "INSERT INTO Registration (Email, BIN, MealChoice, Remarks) VALUES (?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(registerQuery);
-            pstmt.setString(1, email);
-            pstmt.setInt(2, bin);
-            pstmt.setInt(3, mealChoice);
-            pstmt.setString(4, remarks);
-            pstmt.executeUpdate();
-
-            // Reserve a seat if seatNumber is provided
-            if (seatNumber != null) {
-                String reserveSeatQuery = "UPDATE SeatReservation SET Email = ? WHERE BIN = ? AND SeatNumber = ? AND Email IS NULL";
-                pstmt = conn.prepareStatement(reserveSeatQuery);
                 pstmt.setString(1, email);
                 pstmt.setInt(2, bin);
-                pstmt.setString(3, seatNumber);
-                int updatedRows = pstmt.executeUpdate();
-                if (updatedRows == 0) {
-                    throw new SQLException("Failed to reserve seat: " + seatNumber);
-                }
-            }
+                pstmt.setInt(3, mainCourseChoice);
+                pstmt.setInt(4, appetizerChoice);
+                pstmt.setInt(5, dessertChoice);
+                pstmt.setString(6, remarks);
 
-            conn.commit();
-            return true;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error registering for banquet", e);
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
-                }
-            }
-            return false;
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                }
+                int affectedRows = pstmt.executeUpdate();
+                return affectedRows > 0;
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Error closing database resources", e);
+                LOGGER.log(Level.SEVERE, "Error registering for banquet", e);
+                return false;
             }
         }
-    }
 
-    public List<Registration> searchRegisteredBanquets(String email, String date, String banquetName) {
-        List<Registration> registrations = new ArrayList<>();
-        String query = "SELECT r.RegistrationID, r.Email, r.BIN, r.MealChoice, r.Remarks, r.RegistrationTime, " +
-                "b.BanquetName, b.DateTime, b.Address, b.Location, " +
-                "m.Type, m.DishName, sr.SeatNumber " +
-                "FROM Registration r " +
-                "JOIN Banquet b ON r.BIN = b.BIN " +
-                "JOIN Meal m ON r.MealChoice = m.MealID " +
-                "LEFT JOIN SeatReservation sr ON r.Email = sr.Email AND r.BIN = sr.BIN " +
-                "WHERE r.Email = ? ";
+        public List<Registration> searchRegisteredBanquets(String email, String date, String banquetName) {
+            List<Registration> registrations = new ArrayList<>();
+            String query = "SELECT r.RegistrationID, r.Email, r.BIN, r.MainCourseChoice, r.AppetizerChoice, r.DessertChoice, r.Remarks, r.RegistrationTime, " +
+                    "b.BanquetName, b.DateTime, b.Address, b.Location, " +
+                    "m1.Type AS MainCourseType, m1.DishName AS MainCourseDishName, " +
+                    "m2.Type AS AppetizerType, m2.DishName AS AppetizerDishName, " +
+                    "m3.Type AS DessertType, m3.DishName AS DessertDishName " +
+                    "FROM Registration r " +
+                    "JOIN Banquet b ON r.BIN = b.BIN " +
+                    "JOIN Meal m1 ON r.MainCourseChoice = m1.MealID " +
+                    "JOIN Meal m2 ON r.AppetizerChoice = m2.MealID " +
+                    "JOIN Meal m3 ON r.DessertChoice = m3.MealID " +
+                    "WHERE r.Email = ? ";
 
-        if (date != null && !date.isEmpty()) {
-            query += "AND DATE(b.DateTime) = ? ";
-        }
-        if (banquetName != null && !banquetName.isEmpty()) {
-            query += "AND b.BanquetName LIKE ? ";
-        }
-
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, email);
-            int paramIndex = 2;
             if (date != null && !date.isEmpty()) {
-                pstmt.setString(paramIndex++, date);
+                query += "AND DATE(b.DateTime) = ? ";
             }
             if (banquetName != null && !banquetName.isEmpty()) {
-                pstmt.setString(paramIndex, "%" + banquetName + "%");
+                query += "AND b.BanquetName LIKE ? ";
             }
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    Registration registration = new Registration(
-                            rs.getInt("RegistrationID"),
-                            rs.getString("Email"),
-                            rs.getInt("BIN"),
-                            rs.getInt("MealChoice"),
-                            rs.getString("Remarks"),
-                            rs.getString("RegistrationTime")
-                    );
-                    registration.setSeatNumber(rs.getString("SeatNumber"));
-                    registrations.add(registration);
+            try (Connection conn = DB_query.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+                pstmt.setString(1, email);
+                int paramIndex = 2;
+                if (date != null && !date.isEmpty()) {
+                    pstmt.setString(paramIndex++, date);
                 }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error searching registered banquets", e);
-        }
-        return registrations;
-    }
-
-    public boolean isUserRegisteredForBanquet(String email, int bin) {
-        String query = "SELECT COUNT(*) FROM Registration WHERE Email = ? AND BIN = ?";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, email);
-            pstmt.setInt(2, bin);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                if (banquetName != null && !banquetName.isEmpty()) {
+                    pstmt.setString(paramIndex, "%" + banquetName + "%");
                 }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checking user registration", e);
-        }
-        return false;
-    }
 
-    public List<String> getAvailableSeats(int bin) {
-        List<String> availableSeats = new ArrayList<>();
-        String query = "SELECT SeatNumber FROM SeatReservation WHERE BIN = ? AND Email IS NULL";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, bin);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    availableSeats.add(rs.getString("SeatNumber"));
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        Registration registration = new Registration(
+                                rs.getInt("RegistrationID"),
+                                rs.getString("Email"),
+                                rs.getInt("BIN"),
+                                rs.getInt("MainCourseChoice"),
+                                rs.getInt("AppetizerChoice"),
+                                rs.getInt("DessertChoice"),
+                                rs.getString("Remarks"),
+                                rs.getString("RegistrationTime")
+                        );
+                        registration.setMainCourseName(rs.getString("MainCourseType") + " - " + rs.getString("MainCourseDishName"));
+                        registration.setAppetizerName(rs.getString("AppetizerType") + " - " + rs.getString("AppetizerDishName"));
+                        registration.setDessertName(rs.getString("DessertType") + " - " + rs.getString("DessertDishName"));
+                        registration.setBanquetName(rs.getString("BanquetName"));
+                        registration.setDateTime(rs.getString("DateTime"));
+                        registration.setAddress(rs.getString("Address"));
+                        registration.setLocation(rs.getString("Location"));
+                        registrations.add(registration);
+                    }
                 }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error searching registered banquets", e);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error fetching available seats", e);
+            return registrations;
         }
-        return availableSeats;
-    }
 
-    public boolean reserveSeat(String email, int bin, String seatNumber) {
-        String query = "UPDATE SeatReservation SET Email = ? WHERE BIN = ? AND SeatNumber = ? AND Email IS NULL";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            pstmt.setString(1, email);
-            pstmt.setInt(2, bin);
-            pstmt.setString(3, seatNumber);
+        public boolean isUserRegisteredForBanquet(String email, int bin) {
+            String query = "SELECT COUNT(*) FROM Registration WHERE Email = ? AND BIN = ?";
+            try (Connection conn = DB_query.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error reserving seat", e);
-        }
-        return false;
-    }
+                pstmt.setString(1, email);
+                pstmt.setInt(2, bin);
 
-    public String getUserSeatForBanquet(String email, int bin) {
-        String query = "SELECT SeatNumber FROM SeatReservation WHERE Email = ? AND BIN = ?";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, email);
-            pstmt.setInt(2, bin);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("SeatNumber");
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) > 0;
+                    }
                 }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error checking user registration", e);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getting user's seat for banquet", e);
+            return false;
         }
-        return null;
-    }
 
-    public String getMealInfo(int mealChoice) {
-        String query = "SELECT Type, DishName FROM Meal WHERE MealID = ?";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        public String getMealInfo(int mealChoice) {
+            String query = "SELECT Type, DishName FROM Meal WHERE MealID = ?";
+            try (Connection conn = DB_query.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            pstmt.setInt(1, mealChoice);
+                pstmt.setInt(1, mealChoice);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("Type") + " - " + rs.getString("DishName");
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("Type") + " - " + rs.getString("DishName");
+                    }
                 }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error getting meal info", e);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getting meal info", e);
+            return "Unknown";
         }
-        return "Unknown";
-    }
 
-    public List<SeatReservation> getAttendeeSeats(String email) {
-        List<SeatReservation> seatReservations = new ArrayList<>();
-        String query = "SELECT BIN, SeatNumber FROM SeatReservation WHERE Email = ?";
-        try (Connection conn = DB_query.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        public Map<Integer, String> getMealOptionsForBanquet(int bin, String courseType) {
+            Map<Integer, String> mealOptions = new HashMap<>();
+            String query = "SELECT MealID, Type, DishName, Price, SpecialCuisine FROM Meal WHERE BIN = ? AND Type = ?";
 
-            pstmt.setString(1, email);
+            try (Connection conn = DB_query.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    seatReservations.add(new SeatReservation(
-                            rs.getInt("BIN"),
-                            rs.getString("SeatNumber"),
-                            email
-                    ));
+                pstmt.setInt(1, bin);
+                pstmt.setString(2, courseType);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        int mealId = rs.getInt("MealID");
+                        String type = rs.getString("Type");
+                        String dishName = rs.getString("DishName");
+                        double price = rs.getDouble("Price");
+                        String specialCuisine = rs.getString("SpecialCuisine");
+
+                        String mealInfo = String.format("%s - %s (Price: $%.2f)", type, dishName, price);
+                        if (specialCuisine != null && !specialCuisine.isEmpty()) {
+                            mealInfo += " [" + specialCuisine + "]";
+                        }
+
+                        mealOptions.put(mealId, mealInfo);
+                    }
                 }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error getting meal options for banquet", e);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getting attendee seats", e);
+            return mealOptions;
         }
-        return seatReservations;
     }
-}

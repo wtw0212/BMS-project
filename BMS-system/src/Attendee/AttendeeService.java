@@ -59,7 +59,7 @@ public class AttendeeService {
                 // Combine first and last name for display
                 String fullName = firstName + " " + lastName;
 
-                System.out.printf("%-25s | %-20s | %-13s | %-13s | %-25s | %s%n",
+                System.out.printf("%-15s | %-10s | %-13s | %-13s | %-15s | %s%n",
                         email, fullName, attendeeType, mobileNumber,
                         affiliatedOrg,
                         (registeredBanquets != null ? registeredBanquets : "None"));

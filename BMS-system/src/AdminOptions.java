@@ -1,6 +1,4 @@
 import Database.DB_query;
-import Registration.RegistrationService;
-import Registration.SeatReservation;
 
 import java.util.List;
 import java.util.Scanner;
@@ -10,14 +8,12 @@ public class AdminOptions {
     private String adminEmail;
     private Banquet.BanquetService banquetService;
     private Attendee.AttendeeService attendeeService;
-    private Registration.RegistrationService registrationService;
 
     public AdminOptions(Scanner scanner, String adminEmail) {
         this.scanner = scanner;
         this.adminEmail = adminEmail;
         this.banquetService = new Banquet.BanquetService();
         this.attendeeService = new Attendee.AttendeeService();
-        this.registrationService = new Registration.RegistrationService();
     }
 
     public void showAdminOptions() {
@@ -197,19 +193,6 @@ public class AdminOptions {
             System.out.println("Attendee Type: " + attendee.getAttendeeType());
             System.out.println("Mobile Number: " + attendee.getMobileNumber());
             System.out.println("Affiliated Organization: " + attendee.getAffiliatedOrganization());
-
-            // Display seat reservations
-            List<SeatReservation> seatReservations = registrationService.getAttendeeSeats(email);
-            if (!seatReservations.isEmpty()) {
-                System.out.println("Seat Reservations:");
-                for (SeatReservation reservation : seatReservations) {
-                    System.out.println("Banquet ID: " + reservation.getBIN() + ", Seat Number: " + reservation.getSeatNumber());
-                }
-            } else {
-                System.out.println("No seat reservations found for this attendee.");
-            }
-        } else {
-            System.out.println("No attendee found with the email: " + email);
         }
     }
 

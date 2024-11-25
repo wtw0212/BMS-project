@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class UserOptions {
@@ -27,7 +28,6 @@ public class UserOptions {
             System.out.println("- [3] Search Registered Banquets");
             System.out.println("- [4] View Profile");
             System.out.println("- [5] Update Profile");
-            System.out.println("- [6] Reserve a Seat");
             System.out.println("- [-1] Logout");
             System.out.print(">>> Please select the above options x in [x]: ");
 
@@ -50,9 +50,6 @@ public class UserOptions {
                 case 5:
                     updateProfile();
                     break;
-                case 6:
-                    reserveSeat();
-                    break;
                 case -1:
                     System.out.println("Logging out...");
                     loggedIn = false;
@@ -72,45 +69,61 @@ public class UserOptions {
         int bin = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
-        System.out.print("Enter your meal choice (MealID): ");
-        int mealChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Enter any remarks (e.g., seating preference): ");
+        // Display and select main course
+        int mainCourseChoice = selectMealOption(bin, "Main Course");
+        if (mainCourseChoice == -1) return;
+
+        // Display and select appetizer
+        int appetizerChoice = selectMealOption(bin, "Appetizer");
+        if (appetizerChoice == -1) return;
+
+        // Display and select dessert
+        int dessertChoice = selectMealOption(bin, "Dessert");
+        if (dessertChoice == -1) return;
+
+
+        System.out.print("Enter any remarks: ");
         String remarks = scanner.nextLine();
 
-        System.out.print("Do you want to reserve a seat now? (Y/N): ");
-        String reserveSeatChoice = scanner.nextLine().trim().toUpperCase();
+        // Combine all choices and remarks
+        String combinedRemarks = String.format("Main Course: %d | Appetizer: %d | Dessert: %d | %s",
+                mainCourseChoice, appetizerChoice, dessertChoice, remarks);
 
-        String seatNumber = null;
-        if (reserveSeatChoice.equals("Y")) {
-            List<String> availableSeats = registrationService.getAvailableSeats(bin);
-            if (availableSeats.isEmpty()) {
-                System.out.println("No seats available for this banquet. You can reserve a seat later.");
-            } else {
-                System.out.println("Available seats: " + String.join(", ", availableSeats));
-                System.out.print("Enter your preferred seat number (or press Enter to skip): ");
-                seatNumber = scanner.nextLine().trim();
-                if (seatNumber.isEmpty()) {
-                    seatNumber = null;
-                    System.out.println("Seat reservation skipped. You can reserve a seat later.");
-                } else if (!availableSeats.contains(seatNumber)) {
-                    System.out.println("Invalid seat number. Seat reservation skipped. You can reserve a seat later.");
-                    seatNumber = null;
-                }
-            }
-        } else {
-            System.out.println("Seat reservation skipped. You can reserve a seat later.");
-        }
-
-        boolean registered = registrationService.registerForBanquet(userEmail, bin, mealChoice, remarks, seatNumber);
+        boolean registered = registrationService.registerForBanquet(userEmail, bin, mainCourseChoice, appetizerChoice, dessertChoice, combinedRemarks);
         if (registered) {
             System.out.println("Successfully registered for the banquet!");
-            if (seatNumber != null) {
-                System.out.println("Seat " + seatNumber + " has been reserved for you.");
-            }
+            System.out.println("Your meal choices:");
+            System.out.println("Main Course: " + registrationService.getMealInfo(mainCourseChoice));
+            System.out.println("Appetizer: " + registrationService.getMealInfo(appetizerChoice));
+            System.out.println("Dessert: " + registrationService.getMealInfo(dessertChoice));
         } else {
             System.out.println("Failed to register for the banquet. It might be full or you're already registered.");
         }
+    }
+
+
+    private int selectMealOption(int bin, String courseType) {
+        Map<Integer, String> mealOptions = registrationService.getMealOptionsForBanquet(bin, courseType);
+        if (mealOptions.isEmpty()) {
+            System.out.println("No " + courseType + " options available for this banquet. Registration canceled.");
+            return -1;
+        }
+
+        System.out.println("Available " + courseType + " options:");
+        for (Map.Entry<Integer, String> entry : mealOptions.entrySet()) {
+            System.out.printf("%-5d: %s%n", entry.getKey(), entry.getValue());
+        }
+
+        System.out.print("Enter your " + courseType + " choice (MealID): ");
+        int mealChoice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        if (!mealOptions.containsKey(mealChoice)) {
+            System.out.println("Invalid meal choice. Registration canceled.");
+            return -1;
+        }
+
+        return mealChoice;
     }
 
     private void searchRegisteredBanquets() {
@@ -126,25 +139,20 @@ public class UserOptions {
         } else {
             System.out.println("\nRegistered Banquets:");
             System.out.println("----------------------------------------------------------------");
-            System.out.printf("%-5s | %-30s | %-19s | %-20s | %-15s | %-20s | %-15s | %-10s%n",
-                    "BIN", "Banquet Name", "Date & Time", "Address", "Location", "Meal", "Registration Time", "Seat");
+            System.out.printf("%-5s | %-30s | %-19s | %-20s | %-15s | %-20s | %-20s | %-20s | %-15s%n",
+                    "BIN", "Banquet Name", "Date & Time", "Address", "Location", "Main Course", "Appetizer", "Dessert", "Registration Time");
             System.out.println("----------------------------------------------------------------");
             for (Registration.Registration registration : registrations) {
-                String[] details = registration.getRemarks().split(" \\| ");
-                String banquetNameStr = details[0];
-                String dateTime = details[1];
-                String address = details[2];
-                String location = details[3];
-                String meal = details[4];
-                System.out.printf("%-5d | %-30s | %-19s | %-20s | %-15s | %-20s | %-15s | %-10s%n",
+                System.out.printf("%-5d | %-30s | %-19s | %-20s | %-15s | %-20s | %-20s | %-20s | %-15s%n",
                         registration.getBIN(),
-                        banquetNameStr,
-                        dateTime,
-                        address,
-                        location,
-                        meal,
-                        registration.getRegistrationTime(),
-                        registration.getSeatNumber() != null ? registration.getSeatNumber() : "Not reserved");
+                        registration.getBanquetName(),
+                        registration.getDateTime(),
+                        registration.getAddress(),
+                        registration.getLocation(),
+                        registration.getMainCourseName(),
+                        registration.getAppetizerName(),
+                        registration.getDessertName(),
+                        registration.getRegistrationTime());
             }
             System.out.println("----------------------------------------------------------------");
         }
@@ -201,50 +209,4 @@ public class UserOptions {
         }
     }
 
-    private void reserveSeat() {
-        System.out.println("Seat Reservation");
-        System.out.print("Enter BIN of the banquet: ");
-        int bin = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        // Check if the user is registered for this banquet
-        if (!registrationService.isUserRegisteredForBanquet(userEmail, bin)) {
-            System.out.println("You are not registered for this banquet. Please register first.");
-            return;
-        }
-
-        // Check if the user already has a seat reserved
-        String currentSeat = registrationService.getUserSeatForBanquet(userEmail, bin);
-        if (currentSeat != null) {
-            System.out.println("You already have seat " + currentSeat + " reserved for this banquet.");
-            System.out.print("Do you want to change your seat? (Y/N): ");
-            String changeSeat = scanner.nextLine().trim().toUpperCase();
-            if (!changeSeat.equals("Y")) {
-                return;
-            }
-        }
-
-        // Get available seats
-        List<String> availableSeats = registrationService.getAvailableSeats(bin);
-        if (availableSeats.isEmpty()) {
-            System.out.println("No seats available for this banquet.");
-            return;
-        }
-
-        System.out.println("Available seats: " + String.join(", ", availableSeats));
-        System.out.print("Enter your preferred seat number: ");
-        String seatNumber = scanner.nextLine();
-
-        if (!availableSeats.contains(seatNumber)) {
-            System.out.println("Invalid seat number. Please choose from the available seats.");
-            return;
-        }
-
-        boolean reserved = registrationService.reserveSeat(userEmail, bin, seatNumber);
-        if (reserved) {
-            System.out.println("Seat " + seatNumber + " has been successfully reserved for you.");
-        } else {
-            System.out.println("Failed to reserve the seat. Please try again.");
-        }
-    }
 }

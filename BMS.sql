@@ -51,15 +51,19 @@ CREATE TABLE Attendee (
 
 -- Create Registration table
 CREATE TABLE Registration (
-    RegistrationID INT PRIMARY KEY AUTO_INCREMENT,
-    Email VARCHAR(100),
-    BIN INT,
-    MealChoice INT,
-    Remarks TEXT,
-    RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Email) REFERENCES Attendee(Email),
-    FOREIGN KEY (BIN) REFERENCES Banquet(BIN),
-    FOREIGN KEY (MealChoice) REFERENCES Meal(MealID)
+  RegistrationID INT PRIMARY KEY AUTO_INCREMENT,
+  Email VARCHAR(255),
+  BIN INT,
+  MainCourseChoice INT,
+  AppetizerChoice INT,
+  DessertChoice INT,
+  Remarks TEXT,
+  RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (Email) REFERENCES Attendee(Email),
+  FOREIGN KEY (BIN) REFERENCES Banquet(BIN),
+  FOREIGN KEY (MainCourseChoice) REFERENCES Meal(MealID),
+  FOREIGN KEY (AppetizerChoice) REFERENCES Meal(MealID),
+  FOREIGN KEY (DessertChoice) REFERENCES Meal(MealID)
 );
 
 -- Create SeatReservation table
