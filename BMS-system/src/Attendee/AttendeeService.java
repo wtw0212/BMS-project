@@ -229,12 +229,36 @@ public class AttendeeService {
 
             pstmt.setString(1, email);
 
+            // Check if the admin account exists before deleting
+            if (!isAdminAccountExists(email)) {
+                return false;
+            }
+
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error deleting admin account", e);
             return false;
         }
+    }
+
+    private boolean isAdminAccountExists(String email) {
+        String query = "SELECT COUNT(*) FROM Admin WHERE Email = ?";
+
+        try (Connection conn = DB_query.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, email);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking admin account existence", e);
+        }
+        return false;
     }
 
 }

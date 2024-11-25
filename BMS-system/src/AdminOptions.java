@@ -266,11 +266,19 @@ public class AdminOptions {
         System.out.print("Enter admin email to delete: ");
         String email = scanner.nextLine();
 
+        System.out.print("Enter your admin email for confirmation: ");
+        String confirmEmail = scanner.nextLine();
+
+        if (email.equals(confirmEmail)) {
+            System.out.println("You cannot delete your own account.");
+            return;
+        }
+
         boolean deleted = attendeeService.deleteAdminAccount(email);
         if (deleted) {
             System.out.println("Admin account deleted successfully.");
         } else {
-            System.out.println("Failed to delete admin account. The email might not exist or you cannot delete your own account.");
+            System.out.println("Failed to delete admin account. The email might not exist.");
         }
     }
 
