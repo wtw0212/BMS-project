@@ -49,7 +49,7 @@ public class Main {
 
         if (attendeeService.isAdmin(email, password)) {
             System.out.println("Admin login successful! Welcome, " + email + "!");
-            new AdminOptions(scanner).showAdminOptions();
+            new AdminOptions(scanner, email).showAdminOptions();
         } else if (attendeeService.isAttendee(email, password)) {
             System.out.println("User login successful! Welcome, " + email + "!");
             new UserOptions(scanner, email).showUserOptions();

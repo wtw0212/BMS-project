@@ -7,12 +7,14 @@ import java.util.Scanner;
 
 public class AdminOptions {
     private Scanner scanner;
+    private String adminEmail;
     private Banquet.BanquetService banquetService;
     private Attendee.AttendeeService attendeeService;
     private Registration.RegistrationService registrationService;
 
-    public AdminOptions(Scanner scanner) {
+    public AdminOptions(Scanner scanner, String adminEmail) {
         this.scanner = scanner;
+        this.adminEmail = adminEmail;
         this.banquetService = new Banquet.BanquetService();
         this.attendeeService = new Attendee.AttendeeService();
         this.registrationService = new Registration.RegistrationService();
@@ -280,10 +282,7 @@ public class AdminOptions {
         System.out.print("Enter admin email to delete: ");
         String email = scanner.nextLine();
 
-        System.out.print("Enter your admin email for confirmation: ");
-        String confirmEmail = scanner.nextLine();
-
-        if (email.equals(confirmEmail)) {
+        if (email.equals(adminEmail)) {
             System.out.println("You cannot delete your own account.");
             return;
         }
