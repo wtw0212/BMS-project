@@ -162,7 +162,7 @@ public class AdminOptions {
         scanner.nextLine(); // Consume newline
 
         System.out.println("Enter meal details:");
-        System.out.print("Meal Type: ");
+        System.out.print("Meal Type (Main Course, Appetizer, Dessert): ");
         String type = scanner.nextLine();
         System.out.print("Dish Name: ");
         String dishName = scanner.nextLine();
