@@ -7,6 +7,7 @@ public class Registration {
     private int mealChoice;
     private String remarks;
     private String registrationTime;
+    private String seatNumber;
 
     public Registration(int registrationID, String email, int BIN, int mealChoice, String remarks, String registrationTime) {
         this.registrationID = registrationID;
@@ -17,12 +18,6 @@ public class Registration {
         this.registrationTime = registrationTime;
     }
 
-    // Constructor for search results
-    public Registration(int BIN, String banquetName, String dateTime, String address, String location, String mealType, String dishName) {
-        this.BIN = BIN;
-        this.remarks = banquetName + " | " + dateTime + " | " + address + " | " + location + " | " + mealType + " - " + dishName;
-    }
-
     // Getters
     public int getRegistrationID() { return registrationID; }
     public String getEmail() { return email; }
@@ -30,6 +25,7 @@ public class Registration {
     public int getMealChoice() { return mealChoice; }
     public String getRemarks() { return remarks; }
     public String getRegistrationTime() { return registrationTime; }
+    public String getSeatNumber() { return seatNumber; }
 
     // Setters
     public void setRegistrationID(int registrationID) { this.registrationID = registrationID; }
@@ -38,16 +34,18 @@ public class Registration {
     public void setMealChoice(int mealChoice) { this.mealChoice = mealChoice; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
     public void setRegistrationTime(String registrationTime) { this.registrationTime = registrationTime; }
+    public void setSeatNumber(String seatNumber) { this.seatNumber = seatNumber; }
 
     @Override
     public String toString() {
-        return "Registration.Registration{" +
+        return "Registration{" +
                 "registrationID=" + registrationID +
                 ", email='" + email + '\'' +
                 ", BIN=" + BIN +
                 ", mealChoice=" + mealChoice +
                 ", remarks='" + remarks + '\'' +
                 ", registrationTime='" + registrationTime + '\'' +
+                ", seatNumber='" + seatNumber + '\'' +
                 '}';
     }
 }
