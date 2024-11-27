@@ -71,12 +71,12 @@ CREATE INDEX idx_registration_email ON Registration(Email);
 CREATE INDEX idx_registration_bin ON Registration(BIN);
 CREATE INDEX idx_meal_bin ON Meal(BIN);
 
-INSERT INTO Banquet (BanquetName, DateTime, Address, Location, Quota, AdminID, F_NameOfTheContactStaff, L_NameOfTheContactStaff, Available) VALUES
-('Annual Gala', '2024-12-15 18:00:00', '123 Gala St.', 'City Hall', 200, 1, 'John', 'Doe', 'Y'),
-('Charity Dinner', '2024-12-20 19:00:00', '456 Charity Ave.', 'Community Center', 150, 2, 'Jane', 'Smith', 'Y'),
-('Holiday Feast', '2024-12-25 17:00:00', '789 Holiday Rd.', 'Convention Center', 300, 3, 'Tom', 'Jones', 'Y'),
-('Spring Festival', '2025-03-10 12:00:00', '321 Spring Blvd.', 'Park Pavilion', 100, 4, 'Sara', 'Davis', 'Y'),
-('Summer Bash', '2025-06-15 16:00:00', '654 Summer Ln.', 'Beachside Resort', 250, 5, 'Mike', 'Wilson', 'Y');
+INSERT INTO Banquet (BanquetName, DateTime, Address, Location, Quota, F_NameOfTheContactStaff, L_NameOfTheContactStaff, Available) VALUES
+('Annual Gala', '2024-12-15 18:00:00', '123 Gala St.', 'City Hall', 200,  'John', 'Doe', 'Y'),
+('Charity Dinner', '2024-12-20 19:00:00', '456 Charity Ave.', 'Community Center', 150,  'Jane', 'Smith', 'Y'),
+('Holiday Feast', '2024-12-25 17:00:00', '789 Holiday Rd.', 'Convention Center', 300,  'Tom', 'Jones', 'Y'),
+('Spring Festival', '2025-03-10 12:00:00', '321 Spring Blvd.', 'Park Pavilion', 100,  'Sara', 'Davis', 'Y'),
+('Summer Bash', '2025-06-15 16:00:00', '654 Summer Ln.', 'Beachside Resort', 250,  'Mike', 'Wilson', 'Y');
 
 -- Meals
 INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
@@ -93,7 +93,7 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 (1, 'Appetizer', 'Garlic Bread', 5.99, 'Italian'),
 (1, 'Appetizer', 'Antipasto Platter', 14.99, 'Italian'),
 
-(1, 'Dessert', 'Chocolate Lava Cake', 8.99, NULL),
+(1, 'Dessert', 'Chocolate Lava Cake', 8.99, 'Italian'),
 (1, 'Dessert', 'Tiramisu', 7.99, 'Italian'),
 (1, 'Dessert', 'Panna Cotta', 6.99, 'Italian'),
 (1, 'Dessert', 'Cheesecake', 7.49, 'American'),
@@ -177,23 +177,37 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 
 INSERT INTO Attendee (Email, F_Name, L_Name, Address, AttendeeType, Password, MobileNumber, AffiliatedOrganization) VALUES
 ('john.doe@example.com', 'John', 'Doe', '123 Main St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
-('jane.smith@example.com', 'Jane', 'Smith', '456 Elm St, Kowloon', 'staff', 'password123', '23456789', 'SPEED'),
-('mike.jones@example.com', 'Mike', 'Jones', '789 Pine St, Kowloon', 'alumni', 'password123', '34567890', 'HKCC'),
-('lisa.white@example.com', 'Lisa', 'White', '321 Maple St, Kowloon', 'guest', 'password123', '45678901', 'Others'),
+('jane.smith@example.com', 'Jane', 'Smith', '456 Elm St, Kowloon', 'staff', 'password123', '23456789', 'PolyU'),
+('mike.jones@example.com', 'Mike', 'Jones', '789 Pine St, Kowloon', 'alumni', 'password123', '34567890', 'PolyU'),
+('lisa.white@example.com', 'Lisa', 'White', '321 Maple St, Kowloon', 'guest', 'password123', '45678901', 'PolyU'),
 ('tom.brown@example.com', 'Tom', 'Brown', '654 Oak St, Kowloon', 'student', 'password123', '56789012', 'PolyU'),
-('sara.davis@example.com', 'Sara', 'Davis', '987 Cedar St, Kowloon', 'staff', 'password123', '67890123', 'SPEED'),
-('paul.miller@example.com', 'Paul', 'Miller', '159 Birch St, Kowloon', 'alumni', 'password123', '78901234', 'HKCC'),
+('soo.bin@example.com', 'Soo', 'Bin', 'Maple St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
+('jason.chan@example.com', 'Jason', 'Chan', '400 Origami St, Kowloon', 'student', 'password123', '12345678', 'SPEED'),
+('ivan.black@example.com', 'Ivan', 'Black', '009 Super St, Kowloon', 'student', 'password123', '12345678', 'Others'),
+('jessica.brown@example.com', 'Jessica', 'Brown', '106 Birch St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
+('amanda.argent@example.com', 'Amanda', 'Argent', '980 Finch St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
+('julia.carmen@example.com', 'Julia', 'Carmen', '230 Chrysanthemum St, Kowloon', 'staff', 'password123', '12345678', 'Others'),
+('till.sue@example.com', 'Till', 'Sue', '730 Model St, Kowloon', 'staff', 'password123', '12345678', 'SPEED'),
+('richard.wilson@example.com', 'Richard', 'Wilson', '178 Subway St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
+('mia.krystal@example.com', 'Mia', 'Krystal', '122 Metro St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
+('bryan.cheung@example.com', 'Bryan', 'Cheung', '234 Circus St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
+('cherry.liu@example.com', 'Cherry', 'Liu', '329 Honey St, Kowloon', 'guest', 'password123', '12345678', 'PolyU'),
+('nevaeh.christian@example.com', 'Nevaeh', 'Christian', '333 Christ St, Kowloon', 'guest', 'password123', '12345678', 'Others'),
+('pollie.horse@example.com', 'Pollie', 'Horse', '300 Judgment St, Kowloon', 'guest', 'password123', '12345678', 'Others'),
+('sabrina.lam@example.com', 'Sabrina', 'Lam', '013 College St, Kowloon', 'alumni', 'password123', '12345678', 'Others'),
+('sara.davis@example.com', 'Sara', 'Davis', '987 Cedar St, Kowloon', 'staff', 'password123', '67890123', 'PolyU'),
+('paul.miller@example.com', 'Paul', 'Miller', '159 Birch St, Kowloon', 'alumni', 'password123', '78901234', 'PolyU'),
 ('anna.johnson@example.com', 'Anna', 'Johnson', '753 Walnut St, Kowloon', 'guest', 'password123', '89012345', 'Others'),
 ('chris.lee@example.com', 'Chris', 'Lee', '852 Cherry St, Kowloon', 'student', 'password123', '90123456', 'PolyU'),
 ('karen.wilson@example.com', 'Karen', 'Wilson', '951 Chestnut St, Kowloon', 'staff', 'password123', '01234567', 'SPEED'),
 ('david.moore@example.com', 'David', 'Moore', '258 Spruce St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
-('emily.taylor@example.com', 'Emily', 'Taylor', '369 Fir St, Kowloon', 'guest', 'password123', '23456789', 'Others'),
+('emily.taylor@example.com', 'Emily', 'Taylor', '369 Fir St, Kowloon', 'guest', 'password123', '23456789', 'SPEED'),
 ('james.anderson@example.com', 'James', 'Anderson', '147 Poplar St, Kowloon', 'student', 'password123', '34567890', 'PolyU'),
 ('susan.thomas@example.com', 'Susan', 'Thomas', '258 Willow St, Kowloon', 'staff', 'password123', '45678901', 'SPEED'),
 ('robert.jackson@example.com', 'Robert', 'Jackson', '369 Sycamore St, Kowloon', 'alumni', 'password123', '56789012', 'HKCC'),
-('linda.harris@example.com', 'Linda', 'Harris', '159 Elm St, Kowloon', 'guest', 'password123', '67890123', 'Others'),
-('charles.martin@example.com', 'Charles', 'Martin', '753 Maple St, Kowloon', 'student', 'password123', '78901234', 'PolyU'),
-('jessica.thompson@example.com', 'Jessica', 'Thompson', '951 Oak St, Kowloon', 'staff', 'password123', '89012345', 'SPEED'),
+('linda.harris@example.com', 'Linda', 'Harris', '159 Elm St, Kowloon', 'guest', 'password123', '67890123', 'SPEED'),
+('charles.martin@example.com', 'Charles', 'Martin', '753 Maple St, Kowloon', 'student', 'password123', '78901234', 'HKCC'),
+('jessica.thompson@example.com', 'Jessica', 'Thompson', '951 Oak St, Kowloon', 'staff', 'password123', '89012345', 'HKCC'),
 ('daniel.white@example.com', 'Daniel', 'White', '852 Pine St, Kowloon', 'alumni', 'password123', '90123456', 'HKCC'),
 ('sophia.martinez@example.com', 'Sophia', 'Martinez', '654 Cedar St, Kowloon', 'guest', 'password123', '01234567', 'Others'),
 ('matthew.clark@example.com', 'Matthew', 'Clark', '321 Birch St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
@@ -201,6 +215,24 @@ INSERT INTO Attendee (Email, F_Name, L_Name, Address, AttendeeType, Password, Mo
 ('benjamin.lewis@example.com', 'Benjamin', 'Lewis', '789 Fir St, Kowloon', 'alumni', 'password123', '34567890', 'HKCC'),
 ('isabella.walker@example.com', 'Isabella', 'Walker', '159 Poplar St, Kowloon', 'guest', 'password123', '45678901', 'Others'),
 ('elijah.hall@example.com', 'Elijah', 'Hall', '753 Willow St, Kowloon', 'student', 'password123', '56789012', 'PolyU'),
+('ethan.hughes@example.com', 'Ethan', 'Hughes', '123 Maple St, Kowloon', 'student', 'password123', '34567891', 'PolyU'),
+('madison.morris@example.com', 'Madison', 'Morris', '456 Oak St, Kowloon', 'staff', 'password123', '45678912', 'SPEED'),
+('alexander.wood@example.com', 'Alexander', 'Wood', '789 Pine St, Kowloon', 'alumni', 'password123', '56789023', 'HKCC'),
+('grace.martinez@example.com', 'Grace', 'Martinez', '321 Birch St, Kowloon', 'guest', 'password123', '67890134', 'HKCC'),
+('joseph.brown@example.com', 'Joseph', 'Brown', '654 Cedar St, Kowloon', 'student', 'password123', '78901245', 'PolyU'),
+('chloe.jones@example.com', 'Chloe', 'Jones', '987 Spruce St, Kowloon', 'staff', 'password123', '89012356', 'SPEED'),
+('michael.garcia@example.com', 'Michael', 'Garcia', '159 Fir St, Kowloon', 'alumni', 'password123', '90123467', 'HKCC'),
+('sophia.miller@example.com', 'Sophia', 'Miller', '753 Elm St, Kowloon', 'guest', 'password123', '01234578', 'HKCC'),
+('william.rodriguez@example.com', 'William', 'Rodriguez', '258 Maple St, Kowloon', 'student', 'password123', '12345689', 'PolyU'),
+('elizabeth.johnson@example.com', 'Elizabeth', 'Johnson', '369 Oak St, Kowloon', 'staff', 'password123', '23456790', 'SPEED'),
+('james.wilson@example.com', 'James', 'Wilson', '147 Pine St, Kowloon', 'alumni', 'password123', '34567801', 'HKCC'),
+('olivia.thomas@example.com', 'Olivia', 'Thomas', '258 Cedar St, Kowloon', 'guest', 'password123', '45678912', 'HKCC'),
+('benjamin.martin@example.com', 'Benjamin', 'Martin', '369 Birch St, Kowloon', 'student', 'password123', '56789023', 'PolyU'),
+('mia.clark@example.com', 'Mia', 'Clark', '951 Spruce St, Kowloon', 'staff', 'password123', '67890134', 'SPEED'),
+('noah.lewis@example.com', 'Noah', 'Lewis', '753 Fir St, Kowloon', 'alumni', 'password123', '78901245', 'HKCC'),
+('ava.walker@example.com', 'Ava', 'Walker', '159 Maple St, Kowloon', 'guest', 'password123', '89012356', 'Others'),
+('jackson.harris@example.com', 'Jackson', 'Harris', '987 Cedar St, Kowloon', 'alumni', 'password123', '12345689', 'HKCC'),
+('grace.jones@example.com', 'Grace', 'Jones', '258 Fir St, Kowloon', 'guest', 'password123', '23456790', 'Others'),
 ('mia.allen@example.com', 'Mia', 'Allen', '951 Sycamore St, Kowloon', 'staff', 'password123', '67890123', 'SPEED'),
 ('noah.young@example.com', 'Noah', 'Young', '258 Elm St, Kowloon', 'alumni', 'password123', '78901234', 'HKCC'),
 ('ava.king@example.com', 'Ava', 'King', '369 Maple St, Kowloon', 'guest', 'password123', '89012345', 'Others'),
@@ -209,63 +241,63 @@ INSERT INTO Attendee (Email, F_Name, L_Name, Address, AttendeeType, Password, Mo
 ('jack.adams@example.com', 'Jack', 'Adams', '369 Cedar St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
 ('amelia.baker@example.com', 'Amelia', 'Baker', '159 Birch St, Kowloon', 'guest', 'password123', '23456789', 'Others');
 
-INSERT INTO Registration (Email, BIN, MainCourseChoice, AppetizerChoice, DessertChoice, Remarks) VALUES
--- BIN 1
-('john.doe@example.com', 1, 1, 1, 1, 'Looking forward to it!'),
-('jane.smith@example.com', 1, 2, 2, 2, 'Excited for the food!'),
-('mike.jones@example.com', 1, 3, 3, 3, 'Can\'t wait!'),
-('lisa.white@example.com', 1, 4, 4, 4, 'Hope it\'s delicious!'),
-('tom.brown@example.com', 1, 5, 5, 5, 'I love this event!'),
-('sara.davis@example.com', 1, 1, 2, 3, 'Allergic to nuts.'),
+-- For each banquet, register attendees who haven't registered yet
+INSERT INTO Registration (Email, BIN, MainCourseChoice, AppetizerChoice, DessertChoice, Remarks)
+SELECT
+    a.Email,
+    b.BIN,
+    (SELECT MealID FROM Meal WHERE BIN = b.BIN AND Type = 'Main Course' ORDER BY RAND() LIMIT 1),
+    (SELECT MealID FROM Meal WHERE BIN = b.BIN AND Type = 'Appetizer' ORDER BY RAND() LIMIT 1),
+    (SELECT MealID FROM Meal WHERE BIN = b.BIN AND Type = 'Dessert' ORDER BY RAND() LIMIT 1),
+    'Auto-registered for additional banquet'
+FROM
+    Attendee a
+CROSS JOIN
+    Banquet b
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM Registration r
+        WHERE r.Email = a.Email AND r.BIN = b.BIN
+    );
 
--- BIN 2
-('paul.miller@example.com', 2, 6, 6, 6, 'Vegetarian option, please.'),
-('anna.johnson@example.com', 2, 7, 7, 7, 'Excited to join!'),
-('chris.lee@example.com', 2, 8, 8, 8, 'Looking forward to it!'),
-('karen.wilson@example.com', 2, 9, 9, 9, 'Can\'t wait for the food!'),
-('david.moore@example.com', 2, 10, 10, 10, 'Hope it\'s delicious!'),
-('emily.taylor@example.com', 2, 11, 11, 11, 'Allergic to dairy.'),
+-- Display the new registrations
+SELECT * FROM Registration WHERE Remarks = 'Auto-registered for additional banquet';
 
--- BIN 3
-('james.anderson@example.com', 3, 12, 12, 12, 'Excited for the event!'),
-('susan.thomas@example.com', 3, 13, 13, 13, 'Looking forward to it!'),
-('robert.jackson@example.com', 3, 14, 14, 14, 'Can\'t wait!'),
-('linda.harris@example.com', 3, 15, 15, 15, 'Hope it\'s delicious!'),
-('charles.martin@example.com', 3, 16, 16, 16, 'I love this event!'),
-('jessica.thompson@example.com', 3, 17, 17, 17, 'Allergic to gluten.'),
-
--- BIN 4
-('daniel.white@example.com', 4, 18, 18, 18, 'Looking forward to it!'),
-('sophia.martinez@example.com', 4, 19, 19, 19, 'Excited for the food!'),
-('matthew.clark@example.com', 4, 20, 20, 20, 'Can\'t wait!'),
-('olivia.rodriguez@example.com', 4, 21, 21, 21, 'Hope it\'s delicious!'),
-('benjamin.lewis@example.com', 4, 22, 22, 22, 'I love this event!'),
-('isabella.walker@example.com', 4, 23, 23, 23, 'Allergic to seafood.'),
-
--- BIN 5
-('elijah.hall@example.com', 5, 24, 24, 24, 'Excited for the event!'),
-('mia.allen@example.com', 5, 25, 25, 25, 'Looking forward to it!'),
-('noah.young@example.com', 5, 26, 26, 26, 'Can\'t wait!'),
-('ava.king@example.com', 5, 27, 27, 27, 'Hope it\'s delicious!'),
-('lucas.scott@example.com', 5, 28, 28, 28, 'I love this event!'),
-('charlotte.green@example.com', 5, 29, 29, 29, 'Allergic to peanuts.');
-
-
-
+-- Show a summary of registrations per banquet
+SELECT
+    b.BIN,
+    b.BanquetName,
+    COUNT(r.RegistrationID) as TotalRegistrations,
+    b.Quota,
+    b.Quota - COUNT(r.RegistrationID) as RemainingSpots
+FROM
+    Banquet b
+LEFT JOIN
+    Registration r ON b.BIN = r.BIN
+GROUP BY
+    b.BIN, b.BanquetName, b.Quota
+ORDER BY
+    b.BIN;
 
 
 INSERT INTO Admin (Name, Email, Password) VALUES
 (123,123,123);
 
 -- Commented operations for easy testing and debugging:
-  -- SET FOREIGN_KEY_CHECKS = 0;
-  -- Drop all tables
-  -- DROP TABLE IF EXISTS SeatReservation;
-  -- DROP TABLE IF EXISTS Registration;
-  -- DROP TABLE IF EXISTS Meal;
-  -- DROP TABLE IF EXISTS Banquet;
-  -- DROP TABLE IF EXISTS Admin;
-  -- DROP TABLE IF EXISTS Attendee;
-  -- Re-enable foreign key checks
-  -- SET FOREIGN_KEY_CHECKS = 1;
+     -- SET FOREIGN_KEY_CHECKS = 0;
 
+  -- Drop all tables
+
+    -- DROP TABLE IF EXISTS Registration;
+    -- DROP TABLE IF EXISTS Meal;
+    -- DROP TABLE IF EXISTS Banquet;
+    -- DROP TABLE IF EXISTS Admin;
+    -- DROP TABLE IF EXISTS Attendee;
+
+  -- Re-enable foreign key checks
+
+    -- SET FOREIGN_KEY_CHECKS = 1;
+
+-- DELETE FROM Registration
+-- WHERE RegistrationID %11 = 3;

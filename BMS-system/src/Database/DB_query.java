@@ -42,10 +42,11 @@ public class DB_query {
                     "GROUP BY m.MealID ORDER BY OrderCount DESC LIMIT 5";
 
             // 3. Attendance Behavior Report
-            String attendanceBehaviorQuery = "SELECT a.AttendeeType, COUNT(DISTINCT r.Email) as UniqueAttendee, " +
+            String attendanceBehaviorQuery = "SELECT a.AttendeeType, a.AffiliatedOrganization, " +
+                    "COUNT(DISTINCT r.Email) as UniqueAttendee, " +
                     "COUNT(r.RegistrationID) as TotalRegistrations " +
                     "FROM Attendee a LEFT JOIN Registration r ON a.Email = r.Email " +
-                    "GROUP BY a.AttendeeType";
+                    "GROUP BY a.AttendeeType, a.AffiliatedOrganization";
 
             // Execute queries and print reports
             System.out.println("\n1. Registration Status Report:");
@@ -78,11 +79,12 @@ public class DB_query {
             System.out.println("\n3. Attendance Behavior Report:");
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(attendanceBehaviorQuery)) {
-                System.out.printf("%-20s %-20s %-20s%n", "Attendee Type", "Unique Attendee", "Total Registrations");
-                System.out.println("--------------------------------------------------------------------");
+                System.out.printf("%-20s %-30s %-20s %-20s%n", "Attendee Type", "Affiliated Organization", "Unique Attendee", "Total Registrations");
+                System.out.println("-------------------------------------------------------------------------------------");
                 while (rs.next()) {
-                    System.out.printf("%-20s %-20d %-20d%n",
+                    System.out.printf("%-20s %-30s %-20d %-20d%n",
                             rs.getString("AttendeeType"),
+                            rs.getString("AffiliatedOrganization"),
                             rs.getInt("UniqueAttendee"),
                             rs.getInt("TotalRegistrations"));
                 }
