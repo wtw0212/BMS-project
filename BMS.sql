@@ -78,56 +78,177 @@ INSERT INTO Banquet (BanquetName, DateTime, Address, Location, Quota, AdminID, F
 ('Spring Festival', '2025-03-10 12:00:00', '321 Spring Blvd.', 'Park Pavilion', 100, 4, 'Sara', 'Davis', 'Y'),
 ('Summer Bash', '2025-06-15 16:00:00', '654 Summer Ln.', 'Beachside Resort', 250, 5, 'Mike', 'Wilson', 'Y');
 
--- Meals for Annual Gala (BIN = 1)
+-- Meals
 INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
+-- BIN 1
 (1, 'Main Course', 'Grilled Salmon with Asparagus', 29.99, NULL),
+(1, 'Main Course', 'Chicken Parmesan', 24.99, 'Italian'),
+(1, 'Main Course', 'Vegetable Lasagna', 19.99, 'Italian'),
+(1, 'Main Course', 'Beef Stroganoff', 26.99, 'Russian'),
+(1, 'Main Course', 'Shrimp Scampi', 27.99, 'Italian'),
+
 (1, 'Appetizer', 'Stuffed Mushrooms', 12.99, NULL),
-(1, 'Dessert', 'Chocolate Lava Cake', 8.99, NULL);
+(1, 'Appetizer', 'Caprese Salad', 10.99, 'Italian'),
+(1, 'Appetizer', 'Bruschetta', 9.99, 'Italian'),
+(1, 'Appetizer', 'Garlic Bread', 5.99, 'Italian'),
+(1, 'Appetizer', 'Antipasto Platter', 14.99, 'Italian'),
 
--- Meals for Charity Dinner (BIN = 2)
-INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
-(2, 'Main Course', 'Roast Chicken with Vegetables', 24.99, NULL),
-(2, 'Appetizer', 'Caesar Salad', 10.99, NULL),
-(2, 'Dessert', 'Cheesecake with Berries', 7.99, NULL);
+(1, 'Dessert', 'Chocolate Lava Cake', 8.99, NULL),
+(1, 'Dessert', 'Tiramisu', 7.99, 'Italian'),
+(1, 'Dessert', 'Panna Cotta', 6.99, 'Italian'),
+(1, 'Dessert', 'Cheesecake', 7.49, 'American'),
+(1, 'Dessert', 'Fruit Tart', 5.99, 'French'),
 
--- Meals for Holiday Feast (BIN = 3)
-INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
-(3, 'Main Course', 'Beef Wellington with Gravy', 39.99, NULL),
-(3, 'Appetizer', 'Shrimp Cocktail', 14.99, NULL),
-(3, 'Dessert', 'Pumpkin Pie with Whipped Cream', 6.99, NULL);
+-- BIN 2
+(2, 'Main Course', 'Chicken Alfredo Pasta', 24.99, 'Italian'),
+(2, 'Main Course', 'Beef Tacos', 19.99, 'Mexican'),
+(2, 'Main Course', 'Vegetable Stir Fry', 18.99, 'Asian'),
+(2, 'Main Course', 'Lamb Curry', 27.99, 'Indian'),
+(2, 'Main Course', 'BBQ Ribs', 32.99, 'American'),
 
--- Meals for Spring Festival (BIN = 4)
-INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
-(4, 'Main Course', 'Vegetarian Lasagna', 22.99, NULL),
-(4, 'Appetizer', 'Bruschetta with Tomato and Basil', 9.99, NULL),
-(4, 'Dessert', 'Fruit Tartlet', 5.99, NULL);
+(2, 'Appetizer', 'Bruschetta', 9.99, 'Italian'),
+(2, 'Appetizer', 'Guacamole and Chips', 8.99, 'Mexican'),
+(2, 'Appetizer', 'Spring Rolls', 6.99, 'Asian'),
+(2, 'Appetizer', 'Samosas', 5.99, 'Indian'),
+(2, 'Appetizer', 'Buffalo Wings', 10.99, 'American'),
 
--- Meals for Summer Bash (BIN = 5)
-INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
-(5, 'Main Course', 'BBQ Ribs with Coleslaw', 34.99, NULL),
-(5, 'Appetizer', 'Chicken Wings with Hot Sauce', 11.99, NULL),
-(5, 'Dessert', 'Ice Cream Sundae Bar', 8.49, NULL);
+(2, 'Dessert', 'Tiramisu', 7.99, 'Italian'),
+(2, 'Dessert', 'Churros', 5.99, 'Mexican'),
+(2, 'Dessert', 'Mango Sticky Rice', 7.49, 'Asian'),
+(2, 'Dessert', 'Gulab Jamun', 4.99, 'Indian'),
+(2, 'Dessert', 'Apple Pie', 6.99, 'American'),
 
-INSERT INTO Attendee (Email,F_Name,L_Name ,Address ,AttendeeType ,Password ,MobileNumber ,AffiliatedOrganization) VALUES
-('john.doe@example.com','John','Doe','101 Main St','student','password123','12345678','PolyU'),
-('jane.doe@example.com','Jane','Doe','102 Main St','staff','password123','23456789','SPEED'),
-('alice.smith@example.com','Alice','Smith','103 Main St','alumni','password123','34567890','HKCC'),
-('bob.jones@example.com','Bob','Jones','104 Main St','guest','password123','45678901','Others'),
-('charlie.brown@example.com','Charlie','Brown','105 Main St','student','password123','56789012','PolyU'),
-('david.wilson@example.com','David','Wilson','106 Main St','staff','password123','67890123','SPEED'),
-('emily.johnson@example.com','Emily','Johnson','107 Main St','alumni','password123','78901234','HKCC'),
-('frank.miller@example.com','Frank','Miller','108 Main St','guest','password123','89012345','Others'),
-('grace.davis@example.com','Grace','Davis','109 Main St','student','password123','90123456','PolyU'),
-('henry.moore@example.com ','Henry ','Moore ','110 Main St ','staff ','password123 ','01234567 ','SPEED'),
-('zoe.taylor@example.com ','Zoe ','Taylor ','150 Main St ','guest ','password123 ','87654321 ','Others');
+-- BIN 3
+(3, 'Main Course', 'Pork Schnitzel', 22.99, 'German'),
+(3, 'Main Course', 'Seafood Paella', 30.99, 'Spanish'),
+(3, 'Main Course', 'Falafel Wrap', 15.99, 'Middle Eastern'),
+(3, 'Main Course', 'Duck Confit', 35.99, 'French'),
+(3, 'Main Course', 'Stuffed Bell Peppers', 18.99, 'Mediterranean'),
 
-INSERT INTO Registration (Email,BIN ,MainCourseChoice ,AppetizerChoice ,DessertChoice ,Remarks) VALUES
-('john.doe@example.com ',1 ,1 ,2 ,3 ,'Looking forward to it!'),
-('jane.doe@example.com ',2 ,4 ,5 ,6 ,'Excited to join!'),
-('alice.smith@example.com ',3 ,7 ,8 ,9 ,'Can\'t wait!'),
-('bob.jones@example.com ',4 ,10 ,11 ,12 ,'Hope it\'s fun!'),
--- Add more registrations as needed...
-;
+(3, 'Appetizer', 'Pretzel Bites', 7.99, 'German'),
+(3, 'Appetizer', 'Patatas Bravas', 6.99, 'Spanish'),
+(3, 'Appetizer', 'Hummus and Pita', 8.99, 'Middle Eastern'),
+(3, 'Appetizer', 'Escargot', 12.99, 'French'),
+(3, 'Appetizer', 'Greek Salad', 9.99, 'Mediterranean'),
+
+(3, 'Dessert', 'Black Forest Cake', 8.99, 'German'),
+(3, 'Dessert', 'Flan', 5.99, 'Spanish'),
+(3, 'Dessert', 'Baklava', 6.49, 'Middle Eastern'),
+(3, 'Dessert', 'Crème Brûlée', 9.49, 'French'),
+(3, 'Dessert', 'Pistachio Ice Cream', 4.99, 'Mediterranean'),
+
+-- BIN 4
+(4, 'Main Course', 'Eggplant Parmesan', 21.99, 'Italian'),
+(4, 'Main Course', 'Teriyaki Chicken', 23.99, 'Japanese'),
+(4, 'Main Course', 'Beef Bulgogi', 25.99, 'Korean'),
+(4, 'Main Course', 'Paneer Tikka Masala', 19.99, 'Indian'),
+(4, 'Main Course', 'Fish and Chips', 18.99, 'British'),
+
+(4, 'Appetizer', 'Fried Calamari', 11.99, 'Italian'),
+(4, 'Appetizer', 'Edamame', 5.99, 'Japanese'),
+(4, 'Appetizer', 'Kimchi', 4.99, 'Korean'),
+(4, 'Appetizer', 'Onion Bhaji', 6.99, 'Indian'),
+(4, 'Appetizer', 'Mushy Peas', 3.99, 'British'),
+
+(4, 'Dessert', 'Pistachio Baklava', 7.99, 'Middle Eastern'),
+(4, 'Dessert', 'Mochi Ice Cream', 6.99, 'Japanese'),
+(4, 'Dessert', 'Bingsu', 8.49, 'Korean'),
+(4, 'Dessert', 'Ras Malai', 5.99, 'Indian'),
+(4, 'Dessert', 'Sticky Toffee Pudding', 6.49, 'British'),
+
+-- BIN 5
+(5, 'Main Course', 'Vegetable Curry', 17.99, 'Indian'),
+(5, 'Main Course', 'Pasta Primavera', 19.99, 'Italian'),
+(5, 'Main Course', 'Chicken Tikka Masala', 22.99, 'Indian'),
+(5, 'Main Course', 'Shrimp Fried Rice', 20.99, 'Asian'),
+(5, 'Main Course', 'Beef Wellington', 34.99, 'British'),
+
+(5, 'Appetizer', 'Vegetable Spring Rolls', 6.99, 'Asian'),
+(5, 'Appetizer', 'Paneer Pakora', 5.99, 'Indian'),
+(5, 'Appetizer', 'Garlic Knots', 4.99, 'Italian'),
+(5, 'Appetizer', 'Prawn Crackers', 3.99, 'Asian'),
+(5, 'Appetizer', 'Scotch Eggs', 8.99, 'British'),
+
+(5, 'Dessert', 'Gajar Halwa', 5.49, 'Indian'),
+(5, 'Dessert', 'Panna Cotta', 6.99, 'Italian'),
+(5, 'Dessert', 'Mango Mousse', 7.49, 'Asian'),
+(5, 'Dessert', 'Sticky Date Pudding', 6.99, 'British'),
+(5, 'Dessert', 'Chocolate Mousse', 7.99, 'French');
+
+INSERT INTO Attendee (Email, F_Name, L_Name, Address, AttendeeType, Password, MobileNumber, AffiliatedOrganization) VALUES
+('john.doe@example.com', 'John', 'Doe', '123 Main St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
+('jane.smith@example.com', 'Jane', 'Smith', '456 Elm St, Kowloon', 'staff', 'password123', '23456789', 'SPEED'),
+('mike.jones@example.com', 'Mike', 'Jones', '789 Pine St, Kowloon', 'alumni', 'password123', '34567890', 'HKCC'),
+('lisa.white@example.com', 'Lisa', 'White', '321 Maple St, Kowloon', 'guest', 'password123', '45678901', 'Others'),
+('tom.brown@example.com', 'Tom', 'Brown', '654 Oak St, Kowloon', 'student', 'password123', '56789012', 'PolyU'),
+('sara.davis@example.com', 'Sara', 'Davis', '987 Cedar St, Kowloon', 'staff', 'password123', '67890123', 'SPEED'),
+('paul.miller@example.com', 'Paul', 'Miller', '159 Birch St, Kowloon', 'alumni', 'password123', '78901234', 'HKCC'),
+('anna.johnson@example.com', 'Anna', 'Johnson', '753 Walnut St, Kowloon', 'guest', 'password123', '89012345', 'Others'),
+('chris.lee@example.com', 'Chris', 'Lee', '852 Cherry St, Kowloon', 'student', 'password123', '90123456', 'PolyU'),
+('karen.wilson@example.com', 'Karen', 'Wilson', '951 Chestnut St, Kowloon', 'staff', 'password123', '01234567', 'SPEED'),
+('david.moore@example.com', 'David', 'Moore', '258 Spruce St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
+('emily.taylor@example.com', 'Emily', 'Taylor', '369 Fir St, Kowloon', 'guest', 'password123', '23456789', 'Others'),
+('james.anderson@example.com', 'James', 'Anderson', '147 Poplar St, Kowloon', 'student', 'password123', '34567890', 'PolyU'),
+('susan.thomas@example.com', 'Susan', 'Thomas', '258 Willow St, Kowloon', 'staff', 'password123', '45678901', 'SPEED'),
+('robert.jackson@example.com', 'Robert', 'Jackson', '369 Sycamore St, Kowloon', 'alumni', 'password123', '56789012', 'HKCC'),
+('linda.harris@example.com', 'Linda', 'Harris', '159 Elm St, Kowloon', 'guest', 'password123', '67890123', 'Others'),
+('charles.martin@example.com', 'Charles', 'Martin', '753 Maple St, Kowloon', 'student', 'password123', '78901234', 'PolyU'),
+('jessica.thompson@example.com', 'Jessica', 'Thompson', '951 Oak St, Kowloon', 'staff', 'password123', '89012345', 'SPEED'),
+('daniel.white@example.com', 'Daniel', 'White', '852 Pine St, Kowloon', 'alumni', 'password123', '90123456', 'HKCC'),
+('sophia.martinez@example.com', 'Sophia', 'Martinez', '654 Cedar St, Kowloon', 'guest', 'password123', '01234567', 'Others'),
+('matthew.clark@example.com', 'Matthew', 'Clark', '321 Birch St, Kowloon', 'student', 'password123', '12345678', 'PolyU'),
+('olivia.rodriguez@example.com', 'Olivia', 'Rodriguez', '456 Spruce St, Kowloon', 'staff', 'password123', '23456789', 'SPEED'),
+('benjamin.lewis@example.com', 'Benjamin', 'Lewis', '789 Fir St, Kowloon', 'alumni', 'password123', '34567890', 'HKCC'),
+('isabella.walker@example.com', 'Isabella', 'Walker', '159 Poplar St, Kowloon', 'guest', 'password123', '45678901', 'Others'),
+('elijah.hall@example.com', 'Elijah', 'Hall', '753 Willow St, Kowloon', 'student', 'password123', '56789012', 'PolyU'),
+('mia.allen@example.com', 'Mia', 'Allen', '951 Sycamore St, Kowloon', 'staff', 'password123', '67890123', 'SPEED'),
+('noah.young@example.com', 'Noah', 'Young', '258 Elm St, Kowloon', 'alumni', 'password123', '78901234', 'HKCC'),
+('ava.king@example.com', 'Ava', 'King', '369 Maple St, Kowloon', 'guest', 'password123', '89012345', 'Others'),
+('lucas.scott@example.com', 'Lucas', 'Scott', '147 Oak St, Kowloon', 'student', 'password123', '90123456', 'PolyU'),
+('charlotte.green@example.com', 'Charlotte', 'Green', '258 Pine St, Kowloon', 'staff', 'password123', '01234567', 'SPEED'),
+('jack.adams@example.com', 'Jack', 'Adams', '369 Cedar St, Kowloon', 'alumni', 'password123', '12345678', 'HKCC'),
+('amelia.baker@example.com', 'Amelia', 'Baker', '159 Birch St, Kowloon', 'guest', 'password123', '23456789', 'Others');
+
+INSERT INTO Registration (Email, BIN, MainCourseChoice, AppetizerChoice, DessertChoice, Remarks) VALUES
+-- BIN 1
+('john.doe@example.com', 1, 1, 1, 1, 'Looking forward to it!'),
+('jane.smith@example.com', 1, 2, 2, 2, 'Excited for the food!'),
+('mike.jones@example.com', 1, 3, 3, 3, 'Can\'t wait!'),
+('lisa.white@example.com', 1, 4, 4, 4, 'Hope it\'s delicious!'),
+('tom.brown@example.com', 1, 5, 5, 5, 'I love this event!'),
+('sara.davis@example.com', 1, 1, 2, 3, 'Allergic to nuts.'),
+
+-- BIN 2
+('paul.miller@example.com', 2, 6, 6, 6, 'Vegetarian option, please.'),
+('anna.johnson@example.com', 2, 7, 7, 7, 'Excited to join!'),
+('chris.lee@example.com', 2, 8, 8, 8, 'Looking forward to it!'),
+('karen.wilson@example.com', 2, 9, 9, 9, 'Can\'t wait for the food!'),
+('david.moore@example.com', 2, 10, 10, 10, 'Hope it\'s delicious!'),
+('emily.taylor@example.com', 2, 11, 11, 11, 'Allergic to dairy.'),
+
+-- BIN 3
+('james.anderson@example.com', 3, 12, 12, 12, 'Excited for the event!'),
+('susan.thomas@example.com', 3, 13, 13, 13, 'Looking forward to it!'),
+('robert.jackson@example.com', 3, 14, 14, 14, 'Can\'t wait!'),
+('linda.harris@example.com', 3, 15, 15, 15, 'Hope it\'s delicious!'),
+('charles.martin@example.com', 3, 16, 16, 16, 'I love this event!'),
+('jessica.thompson@example.com', 3, 17, 17, 17, 'Allergic to gluten.'),
+
+-- BIN 4
+('daniel.white@example.com', 4, 18, 18, 18, 'Looking forward to it!'),
+('sophia.martinez@example.com', 4, 19, 19, 19, 'Excited for the food!'),
+('matthew.clark@example.com', 4, 20, 20, 20, 'Can\'t wait!'),
+('olivia.rodriguez@example.com', 4, 21, 21, 21, 'Hope it\'s delicious!'),
+('benjamin.lewis@example.com', 4, 22, 22, 22, 'I love this event!'),
+('isabella.walker@example.com', 4, 23, 23, 23, 'Allergic to seafood.'),
+
+-- BIN 5
+('elijah.hall@example.com', 5, 24, 24, 24, 'Excited for the event!'),
+('mia.allen@example.com', 5, 25, 25, 25, 'Looking forward to it!'),
+('noah.young@example.com', 5, 26, 26, 26, 'Can\'t wait!'),
+('ava.king@example.com', 5, 27, 27, 27, 'Hope it\'s delicious!'),
+('lucas.scott@example.com', 5, 28, 28, 28, 'I love this event!'),
+('charlotte.green@example.com', 5, 29, 29, 29, 'Allergic to peanuts.');
 
 
 
@@ -137,14 +258,14 @@ INSERT INTO Admin (Name, Email, Password) VALUES
 (123,123,123);
 
 -- Commented operations for easy testing and debugging:
-  --SET FOREIGN_KEY_CHECKS = 0;
+  -- SET FOREIGN_KEY_CHECKS = 0;
   -- Drop all tables
-  --DROP TABLE IF EXISTS SeatReservation;
-  --DROP TABLE IF EXISTS Registration;
-  --DROP TABLE IF EXISTS Meal;
-  --DROP TABLE IF EXISTS Banquet;
-  --DROP TABLE IF EXISTS Admin;
-  --DROP TABLE IF EXISTS Attendee;
+  -- DROP TABLE IF EXISTS SeatReservation;
+  -- DROP TABLE IF EXISTS Registration;
+  -- DROP TABLE IF EXISTS Meal;
+  -- DROP TABLE IF EXISTS Banquet;
+  -- DROP TABLE IF EXISTS Admin;
+  -- DROP TABLE IF EXISTS Attendee;
   -- Re-enable foreign key checks
-  --SET FOREIGN_KEY_CHECKS = 1;
+  -- SET FOREIGN_KEY_CHECKS = 1;
 

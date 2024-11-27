@@ -162,17 +162,17 @@ public class AdminOptions {
         scanner.nextLine(); // Consume newline
 
         System.out.println("Enter meal details:");
-        System.out.print("Meal Type (Main Course, Appetizer, Dessert): ");
+        System.out.print("Meal Type (Main Course, Appetizer, or Dessert): ");
         String type = scanner.nextLine();
         System.out.print("Dish Name: ");
         String dishName = scanner.nextLine();
         System.out.print("Price: ");
         double price = scanner.nextDouble();
         scanner.nextLine(); // Consume newline
-        System.out.print("Special Cuisine: ");
-        String specialCuisine = scanner.nextLine();
+        System.out.print("Special Food Item (if any, or press Enter to skip): ");
+        String specialFood = scanner.nextLine();
 
-        boolean added = Banquet.BanquetService.addMealToBanquet(bin, type, dishName, price, specialCuisine);
+        boolean added = Banquet.BanquetService.addMealToBanquet(bin, type, dishName, price, specialFood);
         if (added) {
             System.out.println("Meal added to banquet successfully!");
         } else {
