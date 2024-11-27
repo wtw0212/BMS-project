@@ -91,18 +91,18 @@ public class BanquetService {
 
         int maxRows = Math.max(Math.max(mainCourseArray.length, appetizerArray.length), dessertArray.length);
 
-        System.out.println("+------------------------------------+------------------------------------+------------------------------------+");
-        System.out.println("|            Main Courses            |             Appetizers             |              Desserts              |");
-        System.out.println("+------------------------------------+------------------------------------+------------------------------------+");
+        System.out.println("+-------------------------------------------------------+------------------------------------+------------------------------------+");
+        System.out.println("|            Main Courses (Special Cuisine)             |             Appetizers             |              Desserts              |");
+        System.out.println("+-------------------------------------------------------+------------------------------------+------------------------------------+");
 
         for (int i = 0; i < maxRows; i++) {
             System.out.printf("| %-40s | %-40s | %-40s |%n",
-                    i < mainCourseArray.length ? truncateString(mainCourseArray[i], 40) : "",
+                    i < mainCourseArray.length ? truncateString(mainCourseArray[i], 60) : "",
                     i < appetizerArray.length ? truncateString(appetizerArray[i], 40) : "",
                     i < dessertArray.length ? truncateString(dessertArray[i], 40) : "");
         }
 
-        System.out.println("+------------------------------------+------------------------------------+------------------------------------+");
+        System.out.println("+-------------------------------------------------------+------------------------------------+------------------------------------+");
     }
 
     private static String truncateString(String str, int maxLength) {

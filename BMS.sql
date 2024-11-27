@@ -81,13 +81,13 @@ INSERT INTO Banquet (BanquetName, DateTime, Address, Location, Quota, AdminID, F
 -- Meals
 INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 -- BIN 1
-(1, 'Main Course', 'Grilled Salmon with Asparagus', 29.99, NULL),
-(1, 'Main Course', 'Chicken Parmesan', 24.99, 'Italian'),
-(1, 'Main Course', 'Vegetable Lasagna', 19.99, 'Italian'),
-(1, 'Main Course', 'Beef Stroganoff', 26.99, 'Russian'),
-(1, 'Main Course', 'Shrimp Scampi', 27.99, 'Italian'),
+(1, 'Main Course', 'Grilled Salmon with Asparagus', 29.99, 'Sushi'),
+(1, 'Main Course', 'Chicken Parmesan', 24.99, 'Crown Roast of Pork with Mushroom Dressing'),
+(1, 'Main Course', 'Vegetable Lasagna', 19.99, 'Bacon-Wrapped Pesto Pork Tenderloin'),
+(1, 'Main Course', 'Beef Stroganoff', 26.99, 'Braised Short Ribs'),
+(1, 'Main Course', 'Shrimp Scampi', 27.99, 'Stuffed Salmon'),
 
-(1, 'Appetizer', 'Stuffed Mushrooms', 12.99, NULL),
+(1, 'Appetizer', 'Stuffed Mushrooms', 12.99, 'Italian'),
 (1, 'Appetizer', 'Caprese Salad', 10.99, 'Italian'),
 (1, 'Appetizer', 'Bruschetta', 9.99, 'Italian'),
 (1, 'Appetizer', 'Garlic Bread', 5.99, 'Italian'),
@@ -100,11 +100,11 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 (1, 'Dessert', 'Fruit Tart', 5.99, 'French'),
 
 -- BIN 2
-(2, 'Main Course', 'Chicken Alfredo Pasta', 24.99, 'Italian'),
-(2, 'Main Course', 'Beef Tacos', 19.99, 'Mexican'),
-(2, 'Main Course', 'Vegetable Stir Fry', 18.99, 'Asian'),
-(2, 'Main Course', 'Lamb Curry', 27.99, 'Indian'),
-(2, 'Main Course', 'BBQ Ribs', 32.99, 'American'),
+(2, 'Main Course', 'Chicken Alfredo Pasta', 24.99, 'Crab Cakes'),
+(2, 'Main Course', 'Beef Tacos', 19.99, 'Risotto alla Milanese'),
+(2, 'Main Course', 'Vegetable Stir Fry', 18.99, 'Osso Buco alla Milanese'),
+(2, 'Main Course', 'Lamb Curry', 27.99, 'Vitello Tonnato'),
+(2, 'Main Course', 'BBQ Ribs', 32.99, 'Polenta '),
 
 (2, 'Appetizer', 'Bruschetta', 9.99, 'Italian'),
 (2, 'Appetizer', 'Guacamole and Chips', 8.99, 'Mexican'),
@@ -119,11 +119,11 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 (2, 'Dessert', 'Apple Pie', 6.99, 'American'),
 
 -- BIN 3
-(3, 'Main Course', 'Pork Schnitzel', 22.99, 'German'),
-(3, 'Main Course', 'Seafood Paella', 30.99, 'Spanish'),
-(3, 'Main Course', 'Falafel Wrap', 15.99, 'Middle Eastern'),
-(3, 'Main Course', 'Duck Confit', 35.99, 'French'),
-(3, 'Main Course', 'Stuffed Bell Peppers', 18.99, 'Mediterranean'),
+(3, 'Main Course', 'Pork Schnitzel', 22.99, 'Duck Liver Pâté'),
+(3, 'Main Course', 'Seafood Paella', 30.99, 'Chimac '),
+(3, 'Main Course', 'Falafel Wrap', 15.99, 'Prawn Gratin'),
+(3, 'Main Course', 'Duck Confit', 35.99, 'Tacos al Pastor'),
+(3, 'Main Course', 'Stuffed Bell Peppers', 18.99, 'Moussaka'),
 
 (3, 'Appetizer', 'Pretzel Bites', 7.99, 'German'),
 (3, 'Appetizer', 'Patatas Bravas', 6.99, 'Spanish'),
@@ -138,11 +138,11 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 (3, 'Dessert', 'Pistachio Ice Cream', 4.99, 'Mediterranean'),
 
 -- BIN 4
-(4, 'Main Course', 'Eggplant Parmesan', 21.99, 'Italian'),
-(4, 'Main Course', 'Teriyaki Chicken', 23.99, 'Japanese'),
-(4, 'Main Course', 'Beef Bulgogi', 25.99, 'Korean'),
-(4, 'Main Course', 'Paneer Tikka Masala', 19.99, 'Indian'),
-(4, 'Main Course', 'Fish and Chips', 18.99, 'British'),
+(4, 'Main Course', 'Eggplant Parmesan', 21.99, 'Chili Crab'),
+(4, 'Main Course', 'Teriyaki Chicken', 23.99, 'Polenta '),
+(4, 'Main Course', 'Beef Bulgogi', 25.99, 'Bangers and Mash'),
+(4, 'Main Course', 'Paneer Tikka Masala', 19.99, 'Barbecued Meats (Siu Mei)'),
+(4, 'Main Course', 'Fish and Chips', 18.99, 'Dim Sum'),
 
 (4, 'Appetizer', 'Fried Calamari', 11.99, 'Italian'),
 (4, 'Appetizer', 'Edamame', 5.99, 'Japanese'),
@@ -157,11 +157,11 @@ INSERT INTO Meal (BIN, Type, DishName, Price, SpecialCuisine) VALUES
 (4, 'Dessert', 'Sticky Toffee Pudding', 6.49, 'British'),
 
 -- BIN 5
-(5, 'Main Course', 'Vegetable Curry', 17.99, 'Indian'),
-(5, 'Main Course', 'Pasta Primavera', 19.99, 'Italian'),
-(5, 'Main Course', 'Chicken Tikka Masala', 22.99, 'Indian'),
-(5, 'Main Course', 'Shrimp Fried Rice', 20.99, 'Asian'),
-(5, 'Main Course', 'Beef Wellington', 34.99, 'British'),
+(5, 'Main Course', 'Vegetable Curry', 17.99, 'Pho'),
+(5, 'Main Course', 'Pasta Primavera', 19.99, 'Tacos al Pastor'),
+(5, 'Main Course', 'Chicken Tikka Masala', 22.99, 'Baklava'),
+(5, 'Main Course', 'Shrimp Fried Rice', 20.99, 'Ramen '),
+(5, 'Main Course', 'Beef Wellington', 34.99, 'Moussaka '),
 
 (5, 'Appetizer', 'Vegetable Spring Rolls', 6.99, 'Asian'),
 (5, 'Appetizer', 'Paneer Pakora', 5.99, 'Indian'),
