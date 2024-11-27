@@ -282,7 +282,7 @@ ORDER BY
 
 
 INSERT INTO Admin (Name, Email, Password) VALUES
-(123,123,123);
+(admin,admin,admin);
 
 -- Commented operations for easy testing and debugging:
      -- SET FOREIGN_KEY_CHECKS = 0;
